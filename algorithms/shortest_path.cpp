@@ -25,9 +25,9 @@ void printPath(int source, int destination, int distance, int *path)
         return;
     }
     int i = destination;
-    while (i != source)
+    while (i != source && i != -1)
     {
-        cout << " <- " << i;
+        cout << i << " <- ";
         i = path[i];
     }
     cout << i << endl
@@ -44,12 +44,12 @@ void printPath(int source, int destination, int distance, int *path)
  * @param source Numer wierzchołka startowego [int]
  * @param destination Numer wierzchołka docelowego [int]
  */
-void dijkstra_AL(AdjacencyList G, int source, int destination)
+void dijkstra_AL(AdjacencyList *G, int source, int destination)
 {
-    int v_nums = G.getVerticesNum();
-    int e_nums = G.getEdgesNum();
-    int distances[v_nums];
-    int path[v_nums];
+    int v_nums = G->getVerticesNum();
+    int e_nums = G->getEdgesNum();
+    int *distances = new int[v_nums];
+    int *path = new int[v_nums];
     for (int v = 0; v < v_nums; v++)
     {
         distances[v] = 1000;
@@ -57,31 +57,36 @@ void dijkstra_AL(AdjacencyList G, int source, int destination)
     }
     distances[source] = 0;
 
-    PriorityQueue Q;
+    PriorityQueue *Q = new PriorityQueue;
     for (int v = 0; v < v_nums; v++)
     {
-        Vertex *vertex;
+        Vertex *vertex = new Vertex;
         vertex->number = v;
         vertex->distance = distances[v];
-        Q.push(vertex);
+        Q->push(vertex);
     }
 
-    while (Q.isEmpty() == false)
+    while (!Q->isEmpty())
     {
-        int min = Q.getData()[0].number;
-        int u = Q.extractMin();
-        Edge *temp = G.getVertices()[min].head;
+        int u = Q->getData()[0].number;
+        Edge *temp = G->getVertices()[u].head;
+        int min = Q->extractMin();
         while (temp)
         {
-            if (distances[temp->destination] > Q.find(min) + temp->weight)
+            if (distances[temp->destination] > min + temp->weight)
             {
-                distances[temp->destination] > Q.find(min) + temp->weight;
-                path[temp->destination] = min;
+                distances[temp->destination] = min + temp->weight;
+                path[temp->destination] = u;
+                Q->decreaseKey(Q->find(temp->destination), distances[temp->destination]);
             }
             temp = temp->next;
         }
     }
+    cout << v_nums << " " << e_nums << endl;
     printPath(source, destination, distances[destination], path);
+    delete Q;
+    delete[] distances;
+    delete[] path;
 }
 
 /**
@@ -94,12 +99,12 @@ void dijkstra_AL(AdjacencyList G, int source, int destination)
  * @param source Numer wierzchołka startowego [int]
  * @param destination Numer wierzchołka docelowego [int]
  */
-void dijkstra_IM(IncidenceMatrix G, int source, int destination)
+void dijkstra_IM(IncidenceMatrix *G, int source, int destination)
 {
-    int v_nums = G.getVerticesNum();
-    int e_nums = G.getEdgesNum();
-    int distances[v_nums];
-    int path[v_nums];
+    int v_nums = G->getVerticesNum();
+    int e_nums = G->getEdgesNum();
+    int *distances = new int[v_nums];
+    int *path = new int[v_nums];
     for (int v = 0; v < v_nums; v++)
     {
         distances[v] = 1000;
@@ -107,32 +112,37 @@ void dijkstra_IM(IncidenceMatrix G, int source, int destination)
     }
     distances[source] = 0;
 
-    PriorityQueue Q;
+    PriorityQueue *Q = new PriorityQueue;
     for (int v = 0; v < v_nums; v++)
     {
-        Vertex *vertex;
+        Vertex *vertex = new Vertex;
         vertex->number = v;
         vertex->distance = distances[v];
-        Q.push(vertex);
+        Q->push(vertex);
     }
 
-    while (Q.isEmpty() == false)
+    while (!Q->isEmpty())
     {
-        int u = Q.extractMin();
+        int u = Q->getData()[0].number;
+        int min = Q->extractMin();
         for (int e = 0; e < e_nums; e++)
         {
-            IMEdge *edge = G.getEdge(e);
+            IMEdge *edge = G->getEdge(e);
             if (edge->source == u)
             {
-                if (distances[edge->destination] > Q.find(edge->source) + edge->weight)
+                if (distances[edge->destination] > min + edge->weight)
                 {
-                    distances[edge->destination] = Q.find(edge->source) + edge->weight;
+                    distances[edge->destination] = min + edge->weight;
                     path[edge->destination] = edge->source;
+                    Q->decreaseKey(Q->find(edge->destination), distances[edge->destination]);
                 }
             }
         }
     }
     printPath(source, destination, distances[destination], path);
+    delete Q;
+    delete[] distances;
+    delete[] path;
 }
 
 /**
@@ -145,12 +155,12 @@ void dijkstra_IM(IncidenceMatrix G, int source, int destination)
  * @param source Numer wierzchołka startowego [int]
  * @param destination Numer wierzchołka docelowego [int]
  */
-void bellman_ford_AL(AdjacencyList G, int source, int destination)
+void bellman_ford_AL(AdjacencyList *G, int source, int destination)
 {
-    int v_nums = G.getVerticesNum();
-    int e_nums = G.getEdgesNum();
-    int distances[v_nums];
-    int path[v_nums];
+    int v_nums = G->getVerticesNum();
+    int e_nums = G->getEdgesNum();
+    int *distances = new int[v_nums];
+    int *path = new int[v_nums];
     for (int v = 0; v < v_nums; v++)
     {
         distances[v] = 1000;
@@ -158,14 +168,14 @@ void bellman_ford_AL(AdjacencyList G, int source, int destination)
     }
     distances[source] = 0;
 
-    int **edges = G.getAllEdgesList();
+    int **edges = G->getAllEdgesList();
     for (int i = 0; i < v_nums - 1; i++)
     {
         for (int e = 0; e < e_nums; e++)
         {
-            if (distances[edges[e][1]] > distances[edges[e][0]] + distances[edges[e][2]])
+            if (distances[edges[e][1]] > distances[edges[e][0]] + edges[e][2])
             {
-                distances[edges[e][1]] = distances[edges[e][0]] + distances[edges[e][2]];
+                distances[edges[e][1]] = distances[edges[e][0]] + edges[e][2];
                 path[edges[e][1]] = edges[e][0];
             }
         }
@@ -173,13 +183,20 @@ void bellman_ford_AL(AdjacencyList G, int source, int destination)
 
     for (int e = 0; e < e_nums; e++)
     {
-        if (distances[edges[e][1]] > distances[edges[e][0]] + distances[edges[e][2]])
+        if (distances[edges[e][1]] > distances[edges[e][0]] + edges[e][2])
         {
             cout << "W grafie znaleziono cykl ujemny!" << endl;
             return;
         }
     }
     printPath(source, destination, distances[destination], path);
+    for (int e = 0; e < e_nums; e++)
+    {
+        delete[] edges[e];
+    }
+    delete[] edges;
+    delete[] distances;
+    delete[] path;
 }
 
 /**
@@ -192,12 +209,12 @@ void bellman_ford_AL(AdjacencyList G, int source, int destination)
  * @param source Numer wierzchołka startowego [int]
  * @param destination Numer wierzchołka docelowego [int]
  */
-void bellman_ford_IM(IncidenceMatrix G, int source, int destination)
+void bellman_ford_IM(IncidenceMatrix *G, int source, int destination)
 {
-    int v_nums = G.getVerticesNum();
-    int e_nums = G.getEdgesNum();
-    int distances[v_nums];
-    int path[v_nums];
+    int v_nums = G->getVerticesNum();
+    int e_nums = G->getEdgesNum();
+    int *distances = new int[v_nums];
+    int *path = new int[v_nums];
     for (int v = 0; v < v_nums; v++)
     {
         distances[v] = 1000;
@@ -209,7 +226,7 @@ void bellman_ford_IM(IncidenceMatrix G, int source, int destination)
     {
         for (int e = 0; e < e_nums; e++)
         {
-            IMEdge *edge = G.getEdge(e);
+            IMEdge *edge = G->getEdge(e);
             if (distances[edge->destination] > distances[edge->source] + edge->weight)
             {
                 distances[edge->destination] = distances[edge->source] + edge->weight;
@@ -220,7 +237,7 @@ void bellman_ford_IM(IncidenceMatrix G, int source, int destination)
 
     for (int e = 0; e < e_nums; e++)
     {
-        IMEdge *edge = G.getEdge(e);
+        IMEdge *edge = G->getEdge(e);
         if (distances[edge->destination] > distances[edge->source] + edge->weight)
         {
             cout << "W grafie znaleziono cykl ujemny!" << endl;
@@ -228,4 +245,6 @@ void bellman_ford_IM(IncidenceMatrix G, int source, int destination)
         }
     }
     printPath(source, destination, distances[destination], path);
+    delete[] distances;
+    delete[] path;
 }

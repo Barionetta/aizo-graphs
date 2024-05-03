@@ -80,7 +80,7 @@ void listTestSubMenu()
     listDisplayFileOptions();
     short int choice;
     cin >> choice;
-    while (choice < 1 || choice > 2)
+    while (choice != 1 && choice != 2)
     {
         cout << "Wprowadź poprawną opcję.\n";
         cin >> choice;
@@ -124,13 +124,13 @@ void listTestSubMenu()
             int v = 0;
             cout << "\nKtóry wierzchołek ma być korzeniem MST?\n";
             cin >> v;
-            prim_AL(*adjacencyList, v);
+            prim_AL(adjacencyList, v);
             break;
         }
         case 2:
         {
             cout << "Wybrano algorytm Kruskala\n";
-            kruskal_AL(*adjacencyList);
+            kruskal_AL(adjacencyList);
             break;
         }
         case 3:
@@ -142,7 +142,7 @@ void listTestSubMenu()
             cin >> v1;
             cout << "\nNa którym wierzchołku chcesz skończyć?\n";
             cin >> v2;
-            dijkstra_AL(*adjacencyList, v1, v2);
+            dijkstra_AL(adjacencyList, v1, v2);
             break;
         }
         case 4:
@@ -154,7 +154,7 @@ void listTestSubMenu()
             cin >> v1;
             cout << "\nNa którym wierzchołku chcesz skończyć?\n";
             cin >> v2;
-            bellman_ford_AL(*adjacencyList, v1, v2);
+            bellman_ford_AL(adjacencyList, v1, v2);
             break;
         }
         case 0:
@@ -169,7 +169,6 @@ void listTestSubMenu()
         }
         }
     }
-    delete adjacencyList;
     return;
 }
 
@@ -179,7 +178,7 @@ void listRecordSubMenu()
     string path = "../output/adjacencelist.csv";
     ofstream outf(path);
     int tests = 100;
-    int vertices[5] = {5, 7, 10, 12, 14};
+    int vertices[5] = {5, 8, 12, 16, 25};
     for (int i = 0; i < 5; i++)
     {
         int max_e = static_cast<int>((vertices[i] * (vertices[i] - 1)) / 2);
@@ -194,7 +193,7 @@ void listRecordSubMenu()
             {
                 int n = generate_random_number(vertices[i]);
                 auto start = std::chrono::steady_clock::now();
-                prim_AL(*adjacencyList, n);
+                prim_AL(adjacencyList, n);
                 auto stop = std::chrono::steady_clock::now();
                 auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(stop - start);
                 primTime += duration.count();
@@ -206,7 +205,7 @@ void listRecordSubMenu()
             {
                 int n = generate_random_number(vertices[i]);
                 auto start = std::chrono::steady_clock::now();
-                kruskal_AL(*adjacencyList);
+                kruskal_AL(adjacencyList);
                 auto stop = std::chrono::steady_clock::now();
                 auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(stop - start);
                 kruskalTime += duration.count();
@@ -219,7 +218,7 @@ void listRecordSubMenu()
                 int v1 = generate_random_number(vertices[i]);
                 int v2 = generate_random_number(vertices[i]);
                 auto start = std::chrono::steady_clock::now();
-                dijkstra_AL(*adjacencyList, v1, v2);
+                dijkstra_AL(adjacencyList, v1, v2);
                 auto stop = std::chrono::steady_clock::now();
                 auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(stop - start);
                 dijkstraTime += duration.count();
@@ -232,7 +231,7 @@ void listRecordSubMenu()
                 int v1 = generate_random_number(vertices[i]);
                 int v2 = generate_random_number(vertices[i]);
                 auto start = std::chrono::steady_clock::now();
-                bellman_ford_AL(*adjacencyList, v1, v2);
+                bellman_ford_AL(adjacencyList, v1, v2);
                 auto stop = std::chrono::steady_clock::now();
                 auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(stop - start);
                 bellmanTime += duration.count();

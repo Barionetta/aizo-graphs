@@ -63,10 +63,8 @@ public:
     EdgeList *getVertices();
     // Funkcja dodająca krawędź do grafu
     void addEdge(int source, int destination, int weight);
-    // Funkcja zwracająca wagę krawędzi
-    int getWeight(int source, int destination);
     // Funkcja zwracająca listę krawędzi dla jednego wierzchołka
-    EdgeList findVertex(int vertex_num);
+    EdgeList *findVertex(int vertex_num);
     // Funkcja zwracająca tablicę wszystkich krawędzi
     int **getAllEdgesList();
     // Funkcja wczytująca graf z pliku tekstowego

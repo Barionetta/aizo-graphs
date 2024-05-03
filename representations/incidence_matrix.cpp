@@ -19,6 +19,8 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <random>
+#include <algorithm>
 using namespace std;
 
 // Konstruktor klasy IncidenceMatrix
@@ -90,22 +92,12 @@ void IncidenceMatrix::addEdge(int edge_num, int v1, int v2, int weight)
 {
     for (int v = 0; v < vertices_num; v++)
     {
-        if (v == v1)
-        {
-            this->matrix[edge_num][v] = -1 * weight;
-        }
-        else if (v == v2)
-        {
-            this->matrix[edge_num][v] = weight;
-        }
-        else
-        {
-            this->matrix[edge_num][v] = 0;
-        }
+        this->matrix[edge_num][v] = 0;
     }
+    this->matrix[edge_num][v1] = -1 * weight;
+    this->matrix[edge_num][v2] = weight;
     cout << "Poprawnie dodano krawędź (" << v1 << " " << v2 << ")"
          << " " << weight << "." << endl;
-    edges_num += 1;
 }
 
 /**
@@ -119,19 +111,15 @@ IMEdge *IncidenceMatrix::getEdge(int edge_num)
     IMEdge *edge = new IMEdge();
     for (int v = 0; v < vertices_num; v++)
     {
-        if (edge->destination == 0 || edge->source == 0)
+        if (row[v] > 0)
         {
-            if (row[v] > 0)
-            {
-                edge->destination = v;
-                edge->weight = v;
-            }
-            else if (row[v] > 0)
-            {
-                edge->source = v;
-            }
+            edge->destination = v;
+            edge->weight = row[v];
         }
-        break;
+        else if (row[v] < 0)
+        {
+            edge->source = v;
+        }
     }
     return edge;
 }
@@ -146,7 +134,11 @@ int **IncidenceMatrix::getAllEdgesList()
     for (int e = 0; e < edges_num; e++)
     {
         IMEdge *edge = getEdge(e);
-        int edge_list[e] = {edge->source, edge->destination, edge->weight};
+        int *temp = new int[3];
+        temp[0] = edge->source;
+        temp[1] = edge->destination;
+        temp[2] = edge->weight;
+        edge_list[e] = temp;
     }
     return edge_list;
 }
@@ -160,7 +152,7 @@ int **IncidenceMatrix::getAllEdgesList()
  */
 void IncidenceMatrix::readFromFile(string filepath)
 {
-    string path = "../test/" + filepath;
+    string path = filepath;
     fstream f;
     int source = 0;
     int destination = 0;
@@ -169,8 +161,8 @@ void IncidenceMatrix::readFromFile(string filepath)
     f.open(path);
     if (f.is_open())
     {
-        f >> this->vertices_num;
         f >> this->edges_num;
+        f >> this->vertices_num;
         cout << "Liczba wierzchołków: " << this->vertices_num << endl;
         cout << "Liczba krawędzi: " << this->edges_num << endl;
         this->initMatrix();
@@ -182,12 +174,12 @@ void IncidenceMatrix::readFromFile(string filepath)
             i++;
         }
         f.close();
+        cout << "Poprawnie wczytano graf ze ścieżki " << path << " \n";
     }
     else
     {
         cout << "Nie udało się otworzyć pliku ze ścieżki " << path << " \n";
     }
-    cout << "Poprawnie wczytano graf ze ścieżki " << path << " \n";
 }
 
 /**
@@ -201,12 +193,47 @@ void IncidenceMatrix::generate(int vertices, int edges)
     this->setVerticesNum(vertices);
     this->setEdgesNum(edges);
     this->initMatrix();
+    int ed = 0;
+    int *numbers = new int[vertices];
+    for (int i = 0; i < vertices; i++)
+    {
+        numbers[i] = i;
+    }
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    int edges_per_v = static_cast<int>(edges / vertices);
+
+    for (int v = 0; v < vertices_num - 1; v++)
+    {
+        std::shuffle(numbers, numbers + vertices_num, gen);
+        for (int e = 0; e < edges_per_v; e++)
+        {
+            if (numbers[e] == v)
+            {
+                this->addEdge(ed, v, numbers[vertices_num - 1], generate_random_number(20));
+                ed++;
+            }
+            else
+            {
+                this->addEdge(ed, v, numbers[e], generate_random_number(20));
+                ed++;
+            }
+        }
+        edges -= edges_per_v;
+    }
     for (int e = 0; e < edges; e++)
     {
-        int vert1 = generate_random_number(vertices);
-        int vert2 = generate_random_number(vertices);
-        int weight = generate_random_number(vertices);
-        this->addEdge(e, vert1, vert2, weight);
+        std::shuffle(numbers, numbers + vertices_num, gen);
+        if (numbers[e] == vertices_num - 1)
+        {
+            this->addEdge(ed, vertices_num - 1, numbers[vertices_num - 1], generate_random_number(20));
+            ed++;
+        }
+        else
+        {
+            this->addEdge(ed, vertices_num - 1, numbers[e], generate_random_number(20));
+            ed++;
+        }
     }
 }
 
@@ -223,7 +250,7 @@ void IncidenceMatrix::show()
     cout << endl;
     for (int v = 0; v < vertices_num; v++)
     {
-        cout << "V[" << v << "]  ";
+        cout << "V[" << v << "]     ";
         for (int e = 0; e < edges_num; e++)
         {
             cout << this->matrix[e][v] << " ";

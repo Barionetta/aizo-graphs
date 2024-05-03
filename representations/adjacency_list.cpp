@@ -25,6 +25,8 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <random>
+#include <algorithm>
 using namespace std;
 
 // Konstruktor klasy AdjacencyList
@@ -34,7 +36,7 @@ AdjacencyList::AdjacencyList()
     this->edges_num = 0;      // Liczba krawędzi [int]
     this->vertices = nullptr; // Tablica list krawędzi dla każdego wierzchołka [EdgeList*]
 
-    cout << "Poprawnie zainicjalizowano listę sąsiedztwa." << endl;
+    //cout << "Poprawnie zainicjalizowano listę sąsiedztwa." << endl;
 }
 
 /**
@@ -79,6 +81,11 @@ int AdjacencyList::getEdgesNum()
 void AdjacencyList::initArray()
 {
     this->vertices = new EdgeList[vertices_num];
+    for (int i = 0; i < this->vertices_num; i++)
+    {
+        this->vertices[i].head = nullptr;
+        this->vertices[i].v_num = i;
+    }
 }
 
 /**
@@ -98,34 +105,14 @@ EdgeList *AdjacencyList::getVertices()
  */
 void AdjacencyList::addEdge(int source, int destination, int weight)
 {
-    EdgeList sourceVertex = findVertex(source);
+    EdgeList *sourceVertex = findVertex(source);
+
     Edge *newEdge = new Edge();
     newEdge->destination = destination;
     newEdge->weight = weight;
-    newEdge->next = sourceVertex.head;
-    sourceVertex.head = newEdge;
-    cout << "Poprawnie dodano krawędź." << endl;
-    edges_num += 1;
-}
-
-/**
- *  Funkcja zwracająca wagę krawędzi.
- * @param source Numer wierzchołka startowego [int]
- * @param destination Numer wierzchołka startowego [int]
- * @return weight:  Waga krawędzi [int]
- */
-int AdjacencyList::getWeight(int source, int destination)
-{
-    Edge *temp = this->vertices[source].head;
-    while (temp->destination != destination && temp->next != nullptr)
-    {
-        temp = temp->next;
-    }
-    if (temp->destination != destination)
-    {
-        return -1;
-    }
-    return temp->weight;
+    newEdge->next = sourceVertex->head;
+    sourceVertex->head = newEdge;
+    //cout << "Poprawnie dodano krawędź." << endl;
 }
 
 /**
@@ -133,9 +120,9 @@ int AdjacencyList::getWeight(int source, int destination)
  * @param vertex_num Numer wierzchołka [int]
  * @return vertices[vertex_num]: Lista krawędzi wierzchołka [EdgeList*]
  */
-EdgeList AdjacencyList::findVertex(int vertex_num)
+EdgeList *AdjacencyList::findVertex(int vertex_num)
 {
-    return this->vertices[vertex_num];
+    return &vertices[vertex_num];
 }
 
 /**
@@ -151,8 +138,13 @@ int **AdjacencyList::getAllEdgesList()
         Edge *temp = this->vertices[v].head;
         while (temp)
         {
-            int edge_list[e] = {v, temp->destination, temp->weight};
+            int *edge = new int[3];
+            edge[0] = v;
+            edge[1] = temp->destination;
+            edge[2] = temp->weight;
+            edge_list[e] = edge;
             temp = temp->next;
+            e++;
         }
     }
     return edge_list;
@@ -167,7 +159,7 @@ int **AdjacencyList::getAllEdgesList()
  */
 void AdjacencyList::readFromFile(string filepath)
 {
-    string path = "../test/" + filepath;
+    string path = filepath;
     fstream f;
     int source = 0;
     int destination = 0;
@@ -175,8 +167,8 @@ void AdjacencyList::readFromFile(string filepath)
     f.open(path);
     if (f.is_open())
     {
-        f >> this->vertices_num;
         f >> this->edges_num;
+        f >> this->vertices_num;
         cout << "Liczba wierzchołków: " << this->vertices_num << endl;
         cout << "Liczba krawędzi: " << this->edges_num << endl;
         this->initArray();
@@ -187,12 +179,12 @@ void AdjacencyList::readFromFile(string filepath)
             this->addEdge(source, destination, weight);
         }
         f.close();
+        cout << "Poprawnie wczytano graf ze ścieżki " << path << " \n";
     }
     else
     {
         cout << "Nie udało się otworzyć pliku ze ścieżki " << path << " \n";
     }
-    cout << "Poprawnie wczytano graf ze ścieżki " << path << " \n";
 }
 
 /**
@@ -206,12 +198,42 @@ void AdjacencyList::generate(int vertices, int edges)
     this->setVerticesNum(vertices);
     this->setEdgesNum(edges);
     this->initArray();
+    int *numbers = new int[vertices];
+    for (int i = 0; i < vertices; i++)
+    {
+        numbers[i] = i;
+    }
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    int edges_per_v = static_cast<int>(edges / vertices);
+
+    for (int v = 0; v < vertices_num - 1; v++)
+    {
+        std::shuffle(numbers, numbers + vertices_num, gen);
+        for (int e = 0; e < edges_per_v; e++)
+        {
+            if (numbers[e] == v)
+            {
+                this->addEdge(v, numbers[vertices_num - 1], generate_random_number(20));
+            }
+            else
+            {
+                this->addEdge(v, numbers[e], generate_random_number(20));
+            }
+        }
+        edges -= edges_per_v;
+    }
     for (int e = 0; e < edges; e++)
     {
-        int vert1 = generate_random_number(vertices);
-        int vert2 = generate_random_number(vertices);
-        int weight = generate_random_number(vertices);
-        this->addEdge(vert1, vert2, weight);
+        std::shuffle(numbers, numbers + vertices_num, gen);
+        if (numbers[e] == vertices_num - 1)
+        {
+            this->addEdge(vertices_num - 1, numbers[vertices_num - 1], generate_random_number(20));
+        }
+        else
+        {
+            this->addEdge(vertices_num - 1, numbers[e], generate_random_number(20));
+        }
     }
 }
 
@@ -222,11 +244,11 @@ void AdjacencyList::show()
 {
     for (int v = 0; v < vertices_num; v++)
     {
-        cout << "Wierzchołek " << v << " -> |  ";
+        cout << "Wierzchołek [" << v << "] -> |  ";
         Edge *temp = this->vertices[v].head;
         while (temp)
         {
-            cout << temp->destination << "/" << temp->weight << endl;
+            cout << temp->destination << "/" << temp->weight << " -> ";
             temp = temp->next;
         }
         cout << endl;
@@ -248,5 +270,6 @@ AdjacencyList::~AdjacencyList()
         }
         delete this->vertices[v].head;
     }
-    cout << "Poprawnie usunięto listę." << endl;
+    delete[] vertices;
+    //cout << "Poprawnie usunięto listę." << endl;
 }

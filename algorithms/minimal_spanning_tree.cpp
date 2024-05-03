@@ -10,7 +10,6 @@
 #include <iostream>
 using namespace std;
 
-
 /**
  * Algorytm Prima dla listy sąsiedztwa
  * Cormen, Thomas H.; Leiserson, Charles E.; Rivest, Ronald L.;
@@ -20,12 +19,12 @@ using namespace std;
  * @param G Ropatrywany graf w reprezentacji listy sąsiedztwa [AdjacencyList]
  * @param root Numer wierzchołka startowego (korzenia) [int]
  */
-void prim_AL(AdjacencyList G, int root)
+void prim_AL(AdjacencyList *G, int root)
 {
-    int v_nums = G.getVerticesNum();
-    int e_nums = G.getEdgesNum();
-    int keys[v_nums];
-    int predecessors[v_nums];
+    int v_nums = G->getVerticesNum();
+    int e_nums = G->getEdgesNum();
+    int *keys = new int[v_nums];
+    int *predecessors = new int[v_nums];
     for (int v = 0; v < v_nums; v++)
     {
         keys[v] = 1000;
@@ -33,27 +32,27 @@ void prim_AL(AdjacencyList G, int root)
     }
     keys[root] = 0;
 
-    PriorityQueue Q;
+    PriorityQueue *Q = new PriorityQueue;
     for (int v = 0; v < v_nums; v++)
     {
-        Vertex *vertex;
+        Vertex *vertex = new Vertex;
         vertex->number = v;
         vertex->distance = keys[v];
-        Q.push(vertex);
+        Q->push(vertex);
     }
 
-    while (Q.isEmpty() == false)
+    while (!Q->isEmpty())
     {
-        int u = Q.getData()[0].number;
-        int min = Q.extractMin();
-        Edge *temp = G.getVertices()[u].head;
+        int u = Q->getData()[0].number;
+        Edge *temp = G->getVertices()[u].head;
+        int min = Q->extractMin();
         while (temp)
         {
-            if (Q.find(temp->destination) != -1 && temp->weight < keys[temp->destination])
+            if (Q->find(temp->destination) != -1 && temp->weight < keys[temp->destination])
             {
-                predecessors[temp->destination] = u;
                 keys[temp->destination] = temp->weight;
-                //Q.find(temp->destination) = temp->weight;
+                predecessors[temp->destination] = u;
+                Q->decreaseKey(Q->find(temp->destination), temp->weight);
             }
             temp = temp->next;
         }
@@ -61,8 +60,15 @@ void prim_AL(AdjacencyList G, int root)
     cout << "Krawędź:       Waga:\n";
     for (int v = 0; v < v_nums; v++)
     {
-        cout << v << " -> " << predecessors[v] << "     " << keys[v] << endl;
+        if (predecessors[v] != -1)
+        {
+            cout << predecessors[v] << " -> " << v << "     " << keys[v] << endl;
+        }
     }
+    cout << e_nums << " " << v_nums << endl;
+    delete Q;
+    delete[] keys;
+    delete[] predecessors;
 }
 
 /**
@@ -74,12 +80,12 @@ void prim_AL(AdjacencyList G, int root)
  * @param G Ropatrywany graf w reprezentacji macierzy incydencji [IncidenceMatrix]
  * @param root Numer wierzchołka startowego (korzenia) [int]
  */
-void prim_IM(IncidenceMatrix G, int root)
+void prim_IM(IncidenceMatrix *G, int root)
 {
-    int v_nums = G.getVerticesNum();
-    int e_nums = G.getEdgesNum();
-    int keys[v_nums];
-    int predecessors[v_nums];
+    int v_nums = G->getVerticesNum();
+    int e_nums = G->getEdgesNum();
+    int *keys = new int[v_nums];
+    int *predecessors = new int[v_nums];
     for (int v = 0; v < v_nums; v++)
     {
         keys[v] = 1000;
@@ -87,36 +93,45 @@ void prim_IM(IncidenceMatrix G, int root)
     }
     keys[root] = 0;
 
-    PriorityQueue Q;
+    PriorityQueue *Q = new PriorityQueue;
     for (int v = 0; v < v_nums; v++)
     {
-        Vertex *vertex;
+        Vertex *vertex = new Vertex;
         vertex->number = v;
         vertex->distance = keys[v];
-        Q.push(vertex);
+        Q->push(vertex);
     }
 
-    while (Q.isEmpty() == false)
+    while (!Q->isEmpty())
     {
-        int u = Q.extractMin();
+        int u = Q->getData()[0].number;
+        int min = Q->extractMin();
         for (int e = 0; e < e_nums; e++)
         {
-            IMEdge *edge = G.getEdge(e);
+            IMEdge *edge = G->getEdge(e);
             if (edge->source == u)
             {
-                if (Q.find(edge->destination) != -1 && edge->weight < keys[edge->destination])
+                if (Q->find(edge->destination) != -1 && edge->weight < keys[edge->destination])
                 {
-                    predecessors[edge->destination] = edge->source;
                     keys[edge->destination] = edge->weight;
+                    predecessors[edge->destination] = edge->source;
+                    Q->decreaseKey(Q->find(edge->destination), edge->weight);
                 }
             }
         }
     }
     cout << "Krawędź:       Waga:\n";
-    for (int v = 0; v < v_nums; v++)
+    for (int v = 1; v < v_nums; v++)
     {
-        cout << v << " -> " << predecessors[v] << "     " << keys[v] << endl;
+        if (predecessors[v] != -1)
+        {
+            cout << predecessors[v] << " -> " << v << "     " << keys[v] << endl;
+        }
     }
+    cout << e_nums << " " << v_nums << endl;
+    delete Q;
+    delete[] keys;
+    delete[] predecessors;
 }
 
 /**
@@ -127,13 +142,17 @@ void prim_IM(IncidenceMatrix G, int root)
  *
  * @param G Ropatrywany graf w reprezentacji listy sąsiedztwa [AdjacencyList]
  */
-void kruskal_AL(AdjacencyList G)
+void kruskal_AL(AdjacencyList *G)
 {
-    int v_nums = G.getVerticesNum();
-    int e_nums = G.getEdgesNum();
-    int **A;
-    DisjointSet V(v_nums);
-    int **edges = G.getAllEdgesList();
+    int v_nums = G->getVerticesNum();
+    int e_nums = G->getEdgesNum();
+    int **A = new int *[v_nums];
+    for (int i = 0; i < v_nums; i++)
+    {
+        A[i] = new int[3];
+    }
+    DisjointSet *V = new DisjointSet(v_nums);
+    int **edges = G->getAllEdgesList();
     for (int i = 0; i < e_nums - 1; i++)
     {
         for (int j = 0; j < e_nums - i - 1; j++)
@@ -146,27 +165,32 @@ void kruskal_AL(AdjacencyList G)
             }
         }
     }
-
+    int v = 0;
     for (int e = 0; e < e_nums; e++)
     {
-        if (V.findSet(edges[e][0]) != V.findSet(edges[e][1]))
+        if (V->findSet(edges[e][0]) != V->findSet(edges[e][1]))
         {
-            A[e] = edges[e];
-            V.Union(edges[e][0], edges[e][1]);
+            A[v][0] = edges[e][0];
+            A[v][1] = edges[e][1];
+            A[v][2] = edges[e][2];
+            V->Union(edges[e][0], edges[e][1]);
+            v++;
         }
     }
     cout << "Krawędź:       Waga:\n";
-    for (int v = 0; v < v_nums; v++)
+    for (int v = 0; v < v_nums - 1; v++)
     {
         cout << A[v][0] << " -> " << A[v][1] << "     " << A[v][2] << endl;
         delete A[v];
     }
+    delete A[v_nums - 1];
     delete[] A;
 
     for (int e = 0; e < e_nums; e++)
     {
         delete[] edges[e];
     }
+    delete V;
     delete[] edges;
 }
 
@@ -178,13 +202,17 @@ void kruskal_AL(AdjacencyList G)
  *
  * @param G Ropatrywany graf w reprezentacji macierzy incydencji [IncidenceMatrix]
  */
-void kruskal_IM(IncidenceMatrix G)
+void kruskal_IM(IncidenceMatrix *G)
 {
-    int v_nums = G.getVerticesNum();
-    int e_nums = G.getEdgesNum();
-    int **A;
-    DisjointSet V(v_nums);
-    int **edges = G.getAllEdgesList();
+    int v_nums = G->getVerticesNum();
+    int e_nums = G->getEdgesNum();
+    int **A = new int *[v_nums];
+    for (int i = 0; i < v_nums; i++)
+    {
+        A[i] = new int[3];
+    }
+    DisjointSet *V = new DisjointSet(v_nums);
+    int **edges = G->getAllEdgesList();
     for (int i = 0; i < e_nums - 1; i++)
     {
         for (int j = 0; j < e_nums - i - 1; j++)
@@ -197,26 +225,31 @@ void kruskal_IM(IncidenceMatrix G)
             }
         }
     }
-
+    int v = 0;
     for (int e = 0; e < e_nums; e++)
     {
-        if (V.findSet(edges[e][0]) != V.findSet(edges[e][1]))
+        if (V->findSet(edges[e][0]) != V->findSet(edges[e][1]))
         {
-            A[e] = edges[e];
-            V.Union(edges[e][0], edges[e][1]);
+            A[v][0] = edges[e][0];
+            A[v][1] = edges[e][1];
+            A[v][2] = edges[e][2];
+            V->Union(edges[e][0], edges[e][1]);
+            v++;
         }
     }
     cout << "Krawędź:       Waga:\n";
-    for (int v = 0; v < v_nums; v++)
+    for (int v = 0; v < v_nums - 1; v++)
     {
         cout << A[v][0] << " -> " << A[v][1] << "     " << A[v][2] << endl;
         delete A[v];
     }
+    delete A[v_nums - 1];
     delete[] A;
 
     for (int e = 0; e < e_nums; e++)
     {
         delete[] edges[e];
     }
+    delete V;
     delete[] edges;
 }

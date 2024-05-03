@@ -117,20 +117,16 @@ void PriorityQueue::minHeapify(int idx)
  * Stein, Clifford (2022) [1990]. Introduction to Algorithms (4th ed.)
  * Strona 176
  *
- * @param idx Indeks, na którym znajduje się sprawdzana wartość [int]
- * @param value Wierzchołek, który jest porównywany [Vertex*]
+ * @param v Indeks, na którym znajduje się sprawdzana wartość [int]
+ * @param key Wierzchołek, który jest porównywany [Vertex*] nieaktualne już
  */
-void PriorityQueue::decreaseKey(int idx, Vertex v)
+void PriorityQueue::decreaseKey(int v, int key)
 {
-    if (v.distance < data[idx].distance)
+    data[v].distance = key;
+    while (v != 0 && data[getParent(v)].distance > data[v].distance)
     {
-        cout << "Nowy klucz jest większy od obecnego klucza!" << endl;
-    }
-    data[idx] = v;
-    while (idx != 0 && data[getParent(idx)].distance > data[idx].distance)
-    {
-        swap(&data[idx], &data[getParent(idx)]);
-        idx = getParent(idx);
+        swap(&data[v], &data[getParent(v)]);
+        v = getParent(v);
     }
 }
 
@@ -166,7 +162,7 @@ int PriorityQueue::find(int number)
 {
     for (int i = 0; i < size; i++)
     {
-        if (data[i].number = number)
+        if (data[i].number == number)
         {
             cout << "Wierzchołek znajduje się na pozycji " << i << ".\n";
             return i;
@@ -199,7 +195,8 @@ void PriorityQueue::push(Vertex *v)
         data = new_data;
         maxSize += 5;
     }
-    decreaseKey(size, *v);
+    data[size].number = v->number;
+    decreaseKey(size, v->distance);
     size++;
     cout << "Poprawnie dodano wierzchołek do kopca minimalnego.\n";
 }
@@ -221,5 +218,5 @@ bool PriorityQueue::isEmpty()
 PriorityQueue::~PriorityQueue()
 {
     delete[] data;
-    cout << "Poprawnie usunięto kopiec minimalny." << endl;
+    cout << "Poprawnie usunięto kopiec minimalny.\n";
 }

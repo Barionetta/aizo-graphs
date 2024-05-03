@@ -46,7 +46,7 @@ public:
     // Funkcja przeprowadzająca algorytm kopcowania
     void minHeapify(int idx);
     // Funkcja aktualizuje indeks danej wartości
-    void decreaseKey(int idx, Vertex v);
+    void decreaseKey(int v, int key);
     // Funkcja usuwająca najmniejszy wierzchołek z kolejki
     int extractMin();
     // Funkcja znajdująca indeks wierzchołka o zadanym numerze

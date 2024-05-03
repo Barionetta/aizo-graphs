@@ -9,7 +9,7 @@
  *  n [int] - ilość rozpatrywanych wierzchołków
  *  parent [int*] - tablica każdego zbioru
  *  rank [int*] - tablica rang każdego zbioru
- * 
+ *
  */
 #include "disjoint_set.h"
 
@@ -30,6 +30,7 @@ void DisjointSet::makeSet()
     for (int i = 0; i < n; i++)
     {
         parent[i] = i;
+        rank[i] = 0;
     }
 }
 
@@ -57,22 +58,17 @@ void DisjointSet::Union(int x, int y)
 {
     int xset = findSet(x);
     int yset = findSet(y);
-    if (xset == yset)
-    {
-        return;
-    }
-    if (rank[xset] < rank[yset])
-    {
-        parent[xset] = yset;
-    }
-    else if (rank[xset] > rank[yset])
+    if (rank[xset] > rank[yset])
     {
         parent[yset] = xset;
     }
     else
     {
-        parent[yset] = xset;
-        parent[xset] = rank[xset] + 1;
+        parent[xset] = yset;
+        if (rank[xset] == rank[yset])
+        {
+            rank[yset]++;
+        }
     }
 }
 

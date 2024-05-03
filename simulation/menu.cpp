@@ -17,7 +17,7 @@ void showRepresentations()
 
 void loop()
 {
-    cout << "Struktury Danych i Złożoność Obliczeniowa Projekt 2 - Algorytmy Grafowe\n";
+    cout << "Algorytmy i Złożoność Obliczeniowa Projekt 2 - Algorytmy Grafowe\n";
     short int representation;
     showRepresentations();
     cin >> representation;

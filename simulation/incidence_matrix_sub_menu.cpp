@@ -80,7 +80,7 @@ void matrixTestSubMenu()
     matrixDisplayFileOptions();
     short int choice;
     cin >> choice;
-    while (choice < 1 || choice > 2)
+    while (choice != 1 && choice != 2)
     {
         cout << "Wprowadź poprawną opcję.\n";
         cin >> choice;
@@ -124,13 +124,13 @@ void matrixTestSubMenu()
             int v = 0;
             cout << "\nKtóry wierzchołek ma być korzeniem MST?\n";
             cin >> v;
-            prim_IM(*incidenceMatrix, v);
+            prim_IM(incidenceMatrix, v);
             break;
         }
         case 2:
         {
             cout << "Wybrano algorytm Kruskala\n";
-            kruskal_IM(*incidenceMatrix);
+            kruskal_IM(incidenceMatrix);
             break;
         }
         case 3:
@@ -142,7 +142,7 @@ void matrixTestSubMenu()
             cin >> v1;
             cout << "\nNa którym wierzchołku chcesz skończyć?\n";
             cin >> v2;
-            dijkstra_IM(*incidenceMatrix, v1, v2);
+            dijkstra_IM(incidenceMatrix, v1, v2);
             break;
         }
         case 4:
@@ -154,7 +154,7 @@ void matrixTestSubMenu()
             cin >> v1;
             cout << "\nNa którym wierzchołku chcesz skończyć?\n";
             cin >> v2;
-            bellman_ford_IM(*incidenceMatrix, v1, v2);
+            bellman_ford_IM(incidenceMatrix, v1, v2);
             break;
         }
         case 0:
@@ -169,7 +169,6 @@ void matrixTestSubMenu()
         }
         }
     }
-    delete incidenceMatrix;
     return;
 }
 
@@ -179,7 +178,7 @@ void matrixRecordSubMenu()
     string path = "../output/incidencematrix.csv";
     ofstream outf(path);
     int tests = 100;
-    int vertices[5] = {5, 7, 10, 12, 14};
+    int vertices[5] = {5, 8, 12, 16, 25};
     for (int i = 0; i < 5; i++)
     {
         int max_e = static_cast<int>((vertices[i] * (vertices[i] - 1)) / 2);
@@ -194,7 +193,7 @@ void matrixRecordSubMenu()
             {
                 int n = generate_random_number(vertices[i]);
                 auto start = std::chrono::steady_clock::now();
-                prim_IM(*incidenceMatrix, n);
+                prim_IM(incidenceMatrix, n);
                 auto stop = std::chrono::steady_clock::now();
                 auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(stop - start);
                 primTime += duration.count();
@@ -206,7 +205,7 @@ void matrixRecordSubMenu()
             {
                 int n = generate_random_number(vertices[i]);
                 auto start = std::chrono::steady_clock::now();
-                kruskal_IM(*incidenceMatrix);
+                kruskal_IM(incidenceMatrix);
                 auto stop = std::chrono::steady_clock::now();
                 auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(stop - start);
                 kruskalTime += duration.count();
@@ -219,7 +218,7 @@ void matrixRecordSubMenu()
                 int v1 = generate_random_number(vertices[i]);
                 int v2 = generate_random_number(vertices[i]);
                 auto start = std::chrono::steady_clock::now();
-                dijkstra_IM(*incidenceMatrix, v1, v2);
+                dijkstra_IM(incidenceMatrix, v1, v2);
                 auto stop = std::chrono::steady_clock::now();
                 auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(stop - start);
                 dijkstraTime += duration.count();
@@ -232,7 +231,7 @@ void matrixRecordSubMenu()
                 int v1 = generate_random_number(vertices[i]);
                 int v2 = generate_random_number(vertices[i]);
                 auto start = std::chrono::steady_clock::now();
-                bellman_ford_IM(*incidenceMatrix, v1, v2);
+                bellman_ford_IM(incidenceMatrix, v1, v2);
                 auto stop = std::chrono::steady_clock::now();
                 auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(stop - start);
                 bellmanTime += duration.count();
