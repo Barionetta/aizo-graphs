@@ -12,8 +12,14 @@
  * Kolejka umożliwia wykonanie podstawowych operacji, takich jak
  * usunięcie korzenia, znalezienie elementu oraz wstawienie go.
  */
-#ifndef PRIORITY_QUEUE_INCLUDED
-#define PRIORITY_QUEUE_INCLUDED
+
+#ifndef PRIORITY_QUEUE_H
+#define PRIORITY_QUEUE_H
+
+#include <cmath>
+#include <iostream>
+
+using std::cout;
 
 struct Vertex
 {
@@ -23,40 +29,43 @@ struct Vertex
 
 class PriorityQueue
 {
-private:
-    int size;     // Rozmiar kolejki [int]
-    int maxSize;  // Maksymalny rozmiar kolejki [int]
-    Vertex *data; // Tablica wierzchołków [Vertex*]
-    // Funkcja zwracająca indeks rodzica
-    int getParent(int idx);
-    // Funkcja zwracająca indeks lewego dziecka
-    int getLeftChild(int idx);
-    // Funkcja zwracająca indeks prawego dziecka
-    int getRightChild(int idx);
-    // Funkcja pomocnicza zamieniająca miejscami dwie liczby
-    void swap(Vertex *x, Vertex *y);
-
 public:
     // Konstruktor klasy PriorityQueue
     PriorityQueue();
+    // Destruktor klasy PriorityQueue
+    ~PriorityQueue();
+
     // Funkcja zwracająca rozmiar kolejki
-    int getSize();
+    int get_size();
     // Funkcja zwracająca listę wierzchołków kolejki
-    Vertex *getData();
+    Vertex *get_data();
+
     // Funkcja przeprowadzająca algorytm kopcowania
-    void minHeapify(int idx);
+    void min_heapify(int idx);
     // Funkcja aktualizuje indeks danej wartości
-    void decreaseKey(int v, int key);
+    void decrease_key(int v, int key);
     // Funkcja usuwająca najmniejszy wierzchołek z kolejki
-    int extractMin();
+    int extract_min();
     // Funkcja znajdująca indeks wierzchołka o zadanym numerze
     int find(int number);
     // Funkcja dodająca nowy wierzchołek do kolejki
     void push(Vertex *v);
     // Funkcja która sprawdza, czy kolejka jest pusta
-    bool isEmpty();
-    // Destruktor klasy PriorityQueue
-    ~PriorityQueue();
+    bool is_empty();
+
+private:
+    int size_;      // Rozmiar kolejki              [int]
+    int max_size_;  // Maksymalny rozmiar kolejki   [int]
+    Vertex *data_;  // Tablica wierzchołków         [Vertex*]
+    
+    // Funkcja zwracająca indeks rodzica
+    int get_parent(int idx);
+    // Funkcja zwracająca indeks lewego dziecka
+    int get_left_child(int idx);
+    // Funkcja zwracająca indeks prawego dziecka
+    int get_right_child(int idx);
+    // Funkcja pomocnicza zamieniająca miejscami dwie liczby
+    void swap(Vertex &x, Vertex &y);
 };
 
 #endif

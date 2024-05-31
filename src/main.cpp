@@ -1,12 +1,13 @@
 /**
  * Plik główny programu
  */
-#include "simulation/menu.h"
+#include "core/app.h"
 #include <iostream>
 
 int main(int, char **)
 {
-    loop();
+    App app;
+    app.run();
     std::cout << "Program zakończono.\n";
     return 0;
 }

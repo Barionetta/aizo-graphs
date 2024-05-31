@@ -2,12 +2,8 @@
  * Plik źródłowy zawierający implementację algorytmów
  * wyznaczających najkrótszą ścieżkę w grafie między dwoma wierzchołkami.
  */
+
 #include "shortest_path.h"
-#include "priority_queue.h"
-#include "representations/adjacency_list.h"
-#include "representations/incidence_matrix.h"
-#include <iostream>
-using namespace std;
 
 /**
  * Funkcja do wyświetlania najkrótszej ścieżki w grafie
@@ -21,7 +17,7 @@ void printPath(int source, int destination, int distance, int *path)
 {
     if (distance == 1000)
     {
-        cout << "Nie ma drogi z v" << source << " do v" << destination << endl;
+        cout << "Nie ma drogi z v" << source << " do v" << destination << std::endl;
         return;
     }
     int i = destination;
@@ -30,8 +26,8 @@ void printPath(int source, int destination, int distance, int *path)
         cout << i << " <- ";
         i = path[i];
     }
-    cout << i << endl
-         << "Długość ścieżki: " << distance << endl;
+    cout << i << std::endl
+         << "Długość ścieżki: " << distance << std::endl;
 }
 
 /**
@@ -46,8 +42,8 @@ void printPath(int source, int destination, int distance, int *path)
  */
 void dijkstra_AL(AdjacencyList *G, int source, int destination)
 {
-    int v_nums = G->getVerticesNum();
-    int e_nums = G->getEdgesNum();
+    int v_nums = G->get_vertices_num();
+    int e_nums = G->get_edges_num();
     int *distances = new int[v_nums];
     int *path = new int[v_nums];
     for (int v = 0; v < v_nums; v++)
@@ -66,23 +62,23 @@ void dijkstra_AL(AdjacencyList *G, int source, int destination)
         Q->push(vertex);
     }
 
-    while (!Q->isEmpty())
+    while (!Q->is_empty())
     {
-        int u = Q->getData()[0].number;
-        Edge *temp = G->getVertices()[u].head;
-        int min = Q->extractMin();
+        int u = Q->get_data()[0].number;
+        Edge *temp = G->get_vertices()[u].head;
+        int min = Q->extract_min();
         while (temp)
         {
             if (distances[temp->destination] > min + temp->weight)
             {
                 distances[temp->destination] = min + temp->weight;
                 path[temp->destination] = u;
-                Q->decreaseKey(Q->find(temp->destination), distances[temp->destination]);
+                Q->decrease_key(Q->find(temp->destination), distances[temp->destination]);
             }
             temp = temp->next;
         }
     }
-    cout << v_nums << " " << e_nums << endl;
+    cout << v_nums << " " << e_nums << std::endl;
     printPath(source, destination, distances[destination], path);
     delete Q;
     delete[] distances;
@@ -101,8 +97,8 @@ void dijkstra_AL(AdjacencyList *G, int source, int destination)
  */
 void dijkstra_IM(IncidenceMatrix *G, int source, int destination)
 {
-    int v_nums = G->getVerticesNum();
-    int e_nums = G->getEdgesNum();
+    int v_nums = G->get_vertices_num();
+    int e_nums = G->get_edges_num();
     int *distances = new int[v_nums];
     int *path = new int[v_nums];
     for (int v = 0; v < v_nums; v++)
@@ -121,20 +117,20 @@ void dijkstra_IM(IncidenceMatrix *G, int source, int destination)
         Q->push(vertex);
     }
 
-    while (!Q->isEmpty())
+    while (!Q->is_empty())
     {
-        int u = Q->getData()[0].number;
-        int min = Q->extractMin();
+        int u = Q->get_data()[0].number;
+        int min = Q->extract_min();
         for (int e = 0; e < e_nums; e++)
         {
-            IMEdge *edge = G->getEdge(e);
+            IMEdge *edge = G->get_edge(e);
             if (edge->source == u)
             {
                 if (distances[edge->destination] > min + edge->weight)
                 {
                     distances[edge->destination] = min + edge->weight;
                     path[edge->destination] = edge->source;
-                    Q->decreaseKey(Q->find(edge->destination), distances[edge->destination]);
+                    Q->decrease_key(Q->find(edge->destination), distances[edge->destination]);
                 }
             }
         }
@@ -157,8 +153,8 @@ void dijkstra_IM(IncidenceMatrix *G, int source, int destination)
  */
 void bellman_ford_AL(AdjacencyList *G, int source, int destination)
 {
-    int v_nums = G->getVerticesNum();
-    int e_nums = G->getEdgesNum();
+    int v_nums = G->get_vertices_num();
+    int e_nums = G->get_edges_num();
     int *distances = new int[v_nums];
     int *path = new int[v_nums];
     for (int v = 0; v < v_nums; v++)
@@ -168,7 +164,7 @@ void bellman_ford_AL(AdjacencyList *G, int source, int destination)
     }
     distances[source] = 0;
 
-    int **edges = G->getAllEdgesList();
+    int **edges = G->get_all_edges_list();
     for (int i = 0; i < v_nums - 1; i++)
     {
         for (int e = 0; e < e_nums; e++)
@@ -185,7 +181,7 @@ void bellman_ford_AL(AdjacencyList *G, int source, int destination)
     {
         if (distances[edges[e][1]] > distances[edges[e][0]] + edges[e][2])
         {
-            cout << "W grafie znaleziono cykl ujemny!" << endl;
+            cout << "W grafie znaleziono cykl ujemny!" << std::endl;
             return;
         }
     }
@@ -211,8 +207,8 @@ void bellman_ford_AL(AdjacencyList *G, int source, int destination)
  */
 void bellman_ford_IM(IncidenceMatrix *G, int source, int destination)
 {
-    int v_nums = G->getVerticesNum();
-    int e_nums = G->getEdgesNum();
+    int v_nums = G->get_vertices_num();
+    int e_nums = G->get_edges_num();
     int *distances = new int[v_nums];
     int *path = new int[v_nums];
     for (int v = 0; v < v_nums; v++)
@@ -226,7 +222,7 @@ void bellman_ford_IM(IncidenceMatrix *G, int source, int destination)
     {
         for (int e = 0; e < e_nums; e++)
         {
-            IMEdge *edge = G->getEdge(e);
+            IMEdge *edge = G->get_edge(e);
             if (distances[edge->destination] > distances[edge->source] + edge->weight)
             {
                 distances[edge->destination] = distances[edge->source] + edge->weight;
@@ -237,10 +233,10 @@ void bellman_ford_IM(IncidenceMatrix *G, int source, int destination)
 
     for (int e = 0; e < e_nums; e++)
     {
-        IMEdge *edge = G->getEdge(e);
+        IMEdge *edge = G->get_edge(e);
         if (distances[edge->destination] > distances[edge->source] + edge->weight)
         {
-            cout << "W grafie znaleziono cykl ujemny!" << endl;
+            cout << "W grafie znaleziono cykl ujemny!" << std::endl;
             return;
         }
     }

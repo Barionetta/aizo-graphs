@@ -12,52 +12,35 @@
  * Kolejka umożliwia wykonanie podstawowych operacji, takich jak
  * usunięcie korzenia, znalezienie elementu oraz wstawienie go.
  */
-#include "priority_queue.h"
-#include <iostream>
-#include <cmath>
-using namespace std;
 
-// Konstruktor klasy PriorityQueue
+#include "priority_queue.h"
+
+/**
+ * Konstruktor klasy PriorityQueue
+*/
 PriorityQueue::PriorityQueue()
+    : size_(0),
+      max_size_(10)
 {
-    size = 0;                   // Rozmiar kolejki [int]
-    maxSize = 10;               // Maksymalny rozmiar kolejki [int]
-    data = new Vertex[maxSize]; // Tablica wierzchołków [Vertex*]
-    cout << "Poprawnie zainicjalizowano kopiec minimalny." << endl;
+    data_ = new Vertex[max_size_]; // Tablica wierzchołków [Vertex*]
+    cout << "Poprawnie zainicjalizowano kopiec minimalny.\n";
 }
 
-/**
- * Funkcja zwracająca indeks rodzica
- *
- * @param idx Indeks elementu, którego rodzic jest poszukiwany [int]
- * @return Indeks rodzica [int]
- */
-int PriorityQueue::getParent(int idx) { return floor((idx - 1) / 2); }
-
-/**
- * Funkcja zwracająca indeks lewego dziecka
- *
- * @param idx Indeks elementu, którego dziecko jest poszukiwane [int]
- * @return Indeks lewego dziecka [int]
- */
-int PriorityQueue::getLeftChild(int idx) { return (2 * idx) + 1; }
-
-/**
- * Funkcja zwracająca indeks prawego dziecka
- *
- * @param idx Indeks elementu, którego dziecko jest poszukiwane [int]
- * @return Indeks prawego dziecka [int]
- */
-int PriorityQueue::getRightChild(int idx) { return (2 * idx) + 2; }
+// Destruktor klasy PriorityQueue
+PriorityQueue::~PriorityQueue()
+{
+    delete[] data_;
+    cout << "Poprawnie usunięto kopiec minimalny.\n";
+}
 
 /**
  * Funkcja zwracająca rozmiar kolejki
  *
  * @return size:  Rozmiar kolejki [int]
  */
-int PriorityQueue::getSize()
+int PriorityQueue::get_size()
 {
-    return this->size;
+    return this->size_;
 };
 
 /**
@@ -65,22 +48,9 @@ int PriorityQueue::getSize()
  *
  * @return data: lista wierzchołków kolejki [Vertex*]
  */
-Vertex *PriorityQueue::getData()
+Vertex *PriorityQueue::get_data()
 {
-    return this->data;
-}
-
-/**
- * Funkcja pomocnicza zamieniająca miejscami dwa wierzchołki
- *
- * @param x Pierwszy zamieniany wierzchołek [Vertex*]
- * @param y Drugi zamieniany wierzchołek [Vertex*]
- */
-void PriorityQueue::swap(Vertex *x, Vertex *y)
-{
-    Vertex temp = *x;
-    *x = *y;
-    *y = temp;
+    return this->data_;
 }
 
 /**
@@ -91,23 +61,23 @@ void PriorityQueue::swap(Vertex *x, Vertex *y)
  *
  * @param idx Indeks korzenia poddrzewa [int]
  */
-void PriorityQueue::minHeapify(int idx)
+void PriorityQueue::min_heapify(int idx)
 {
     int smallest = idx;
-    int leftChild = getLeftChild(idx);
-    int rightChild = getRightChild(idx);
-    if (leftChild <= this->size && data[leftChild].distance < data[idx].distance)
+    int leftChild = get_left_child(idx);
+    int rightChild = get_right_child(idx);
+    if (leftChild <= this->size_ && data_[leftChild].distance < data_[idx].distance)
     {
         smallest = leftChild;
     }
-    if (rightChild <= this->size && data[rightChild].distance < data[smallest].distance)
+    if (rightChild <= this->size_ && data_[rightChild].distance < data_[smallest].distance)
     {
         smallest = rightChild;
     }
     if (smallest != idx)
     {
-        swap(&data[idx], &data[smallest]);
-        minHeapify(smallest);
+        swap(data_[idx], data_[smallest]);
+        min_heapify(smallest);
     }
 }
 
@@ -120,13 +90,13 @@ void PriorityQueue::minHeapify(int idx)
  * @param v Indeks, na którym znajduje się sprawdzana wartość [int]
  * @param key Wierzchołek, który jest porównywany [Vertex*] nieaktualne już
  */
-void PriorityQueue::decreaseKey(int v, int key)
+void PriorityQueue::decrease_key(int v, int key)
 {
-    data[v].distance = key;
-    while (v != 0 && data[getParent(v)].distance > data[v].distance)
+    data_[v].distance = key;
+    while (v != 0 && data_[get_parent(v)].distance > data_[v].distance)
     {
-        swap(&data[v], &data[getParent(v)]);
-        v = getParent(v);
+        swap(data_[v], data_[get_parent(v)]);
+        v = get_parent(v);
     }
 }
 
@@ -137,17 +107,17 @@ void PriorityQueue::decreaseKey(int v, int key)
  * Strona 175
  * @return min - Minimalny dystans wierzchołka kolejki [int]
  */
-int PriorityQueue::extractMin()
+int PriorityQueue::extract_min()
 {
-    if (size < 1)
+    if (size_ < 1)
     {
-        cout << "Niedomiar kopca!" << endl;
+        cout << "Niedomiar kopca!\n";
         return -1;
     }
-    int min = data[0].distance;
-    data[0] = data[size - 1];
-    size--;
-    minHeapify(0);
+    int min = data_[0].distance;
+    data_[0] = data_[size_ - 1];
+    size_--;
+    min_heapify(0);
     return min;
 }
 
@@ -160,15 +130,15 @@ int PriorityQueue::extractMin()
  */
 int PriorityQueue::find(int number)
 {
-    for (int i = 0; i < size; i++)
+    for (int i = 0; i < size_; i++)
     {
-        if (data[i].number == number)
+        if (data_[i].number == number)
         {
             cout << "Wierzchołek znajduje się na pozycji " << i << ".\n";
             return i;
         }
     }
-    cout << "Nie znaleziono podanego wierzchołka." << endl;
+    cout << "Nie znaleziono podanego wierzchołka.\n";
     return -1;
 }
 
@@ -182,22 +152,22 @@ int PriorityQueue::find(int number)
  */
 void PriorityQueue::push(Vertex *v)
 {
-    if (size == maxSize)
+    if (size_ == max_size_)
     {
-        Vertex *new_data = new Vertex[maxSize + 5];
+        Vertex *new_data = new Vertex[max_size_ + 5];
 
-        for (int i = 0; i < size; i++)
+        for (int i = 0; i < size_; i++)
         {
-            new_data[i] = data[i];
+            new_data[i] = data_[i];
         }
 
-        delete[] data;
-        data = new_data;
-        maxSize += 5;
+        delete[] data_;
+        data_ = new_data;
+        max_size_ += 5;
     }
-    data[size].number = v->number;
-    decreaseKey(size, v->distance);
-    size++;
+    data_[size_].number = v->number;
+    decrease_key(size_, v->distance);
+    size_++;
     cout << "Poprawnie dodano wierzchołek do kopca minimalnego.\n";
 }
 
@@ -205,18 +175,49 @@ void PriorityQueue::push(Vertex *v)
  * Funkcja która sprawdza, czy kolejka jest pusta
  * @return true/false : Czy kolejka jest pusta
  */
-bool PriorityQueue::isEmpty()
+bool PriorityQueue::is_empty()
 {
-    if (size == 0)
+    if (size_ == 0)
     {
         return true;
     }
     return false;
 }
 
-// Destruktor klasy PriorityQueue
-PriorityQueue::~PriorityQueue()
+
+/**
+ * Funkcja zwracająca indeks rodzica
+ *
+ * @param idx Indeks elementu, którego rodzic jest poszukiwany [int]
+ * @return Indeks rodzica [int]
+ */
+int PriorityQueue::get_parent(int idx) { return floor((idx - 1) / 2); }
+
+/**
+ * Funkcja zwracająca indeks lewego dziecka
+ *
+ * @param idx Indeks elementu, którego dziecko jest poszukiwane [int]
+ * @return Indeks lewego dziecka [int]
+ */
+int PriorityQueue::get_left_child(int idx) { return (2 * idx) + 1; }
+
+/**
+ * Funkcja zwracająca indeks prawego dziecka
+ *
+ * @param idx Indeks elementu, którego dziecko jest poszukiwane [int]
+ * @return Indeks prawego dziecka [int]
+ */
+int PriorityQueue::get_right_child(int idx) { return (2 * idx) + 2; }
+
+/**
+ * Funkcja pomocnicza zamieniająca miejscami dwa wierzchołki
+ *
+ * @param x Pierwszy zamieniany wierzchołek [Vertex*]
+ * @param y Drugi zamieniany wierzchołek [Vertex*]
+ */
+void PriorityQueue::swap(Vertex &x, Vertex &y)
 {
-    delete[] data;
-    cout << "Poprawnie usunięto kopiec minimalny.\n";
+    Vertex temp = x;
+    x = y;
+    y = temp;
 }
