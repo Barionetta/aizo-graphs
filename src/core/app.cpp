@@ -71,7 +71,7 @@ void App::set_state(unsigned int state)
 void App::perform_mode_selection()
 {
     cout << "Co chcesz zrobić?\n";
-    Menu::getEntry(this->modes_menu_);
+    Menu::get_entry(this->modes_menu_);
 }
 
 /**
@@ -80,7 +80,7 @@ void App::perform_mode_selection()
 void App::perform_graph_creation()
 {
     cout << "Jakiej reprezentacji chcesz użyć?\n";
-    Menu::getEntry(this->graphs_menu_);
+    Menu::get_entry(this->graphs_menu_);
     this->set_state(3);
 }
 
@@ -90,7 +90,7 @@ void App::perform_graph_creation()
 void App::perform_algorithm_selection()
 {
     cout << "Jaki algorytm chcesz zaprezentować?\n";
-    Menu::getEntry(this->algorithms_menu_);
+    Menu::get_entry(this->algorithms_menu_);
 }
 
 /**
@@ -102,7 +102,7 @@ void App::perform_algorithm_selection()
 template <typename T>
 void App::perform_alogrithm(T graph, std::function<void()> graph_algorithmn)
 {
-    graph_algorithmn(graph);
+    //graph_algorithmn(graph);
 }
 
 /*

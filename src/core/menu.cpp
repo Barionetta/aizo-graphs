@@ -22,7 +22,7 @@ void Menu::show(MenuEntries menu)
  * 
  * @param menu Menu, z którego wykonywana jest funkcja [MenuEntries]
 */
-void Menu::getEntry(MenuEntries menu)
+void Menu::get_entry(MenuEntries menu)
 {
     show(menu);
     unsigned int choice;

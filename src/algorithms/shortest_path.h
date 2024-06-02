@@ -5,25 +5,32 @@
 
 #ifndef SHORTEST_PATH_H
 #define SHORTEST_PATH_H
-#include "priority_queue.h"
-#include "graphs/adjacency_list.h"
-#include "graphs/incidence_matrix.h"
 
 #include <iostream>
 
-using std::cout;
+namespace ShortestPath
+{
+    struct Path
+    {
+        int cost;           // Koszt ścieżki                    [int]
+        int vertices_num;   // Liczba wierzchołków w ścieżce    [int]   
+        int vertices[];     // Tablica wierzchołków             [int*]
 
-// Funkcja do wyświetlania najkrótszej ścieżki w grafie
-void printPath(int source, int destination, int distance, int *path);
+        // Funkcja do wyświetlania struktury
+        void print()
+        {
+            std::cout << "Koszt ścieżki: " << cost << "Ścieżka: ";
+            for (int v = vertices_num - 1; v > 0; v--)
+            {
+                std::cout << vertices[v] << " -> ";
+            }
+            std::cout << vertices[0] << "\n";
+        }
+    };
 
-// Algorytm Dijkstry dla listy sąsiedztwa
-void dijkstra_AL(AdjacencyList *G, int source, int destination);
-// Algorytm Dijkstry dla macierzy incydencji
-void dijkstra_IM(IncidenceMatrix *G, int source, int destination);
+    Path dijikstra();
 
-// Algorytm Bellmana-Forda dla listy sąsiedztwa
-void bellman_ford_AL(AdjacencyList *G, int source, int destination);
-// Algorytm Bellmana-Forda dla macierzy incydencji
-void bellman_ford_IM(IncidenceMatrix *G, int source, int destination);
+    Path bellman_ford();
+}
 
 #endif

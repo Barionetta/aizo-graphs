@@ -15,24 +15,25 @@
 #ifndef DISJOINT_SET_H
 #define DISJOINT_SET_H
 
+#include <memory>
+
 class DisjointSet
 {
 public:
     // Konstruktor klasy DisjointSet
     DisjointSet(int n);
-    // Destruktor klasy DisjointSet
-    ~DisjointSet();
+    
     // Funkcja tworząca n podzbiorów z jednych wierzchołkiem
     void make_set();
     // Funkcja znajdująca wierzchołek reprezentatywny zbioru, do którego należy zadany wierzchołek
     int find_set(int x);
     // Funkcja łącząca dwa zbiory rozłączne
-    void Union(int x, int y);
+    void union_(int x, int y);
 
 private:
-    int *rank_;      // Tablica rang zbiorów [int*]
-    int *parent_;    // Tablica zbiorów      [int*]
-    int n_;          // Ilość wierzchołków   [int]
+    std::unique_ptr<int[]> rank_;       // Tablica rang zbiorów [int*]
+    std::unique_ptr<int[]> parent_;     // Tablica zbiorów      [int*]
+    int n_;                             // Ilość wierzchołków   [int]
 };
 
 #endif

@@ -4,6 +4,7 @@
 
 #ifndef OTHERS_H
 #define OTHERS_H
+#include "structures/structures.h"
 
 #include <fstream>
 #include <iostream>
@@ -13,7 +14,8 @@
 namespace Others
 {
     // Funkcja do zamiany dwóch liczb miejscami
-    void swap(int& num_1, int& num_2);
+    template <typename T>
+    void swap(T& num_1, T& num_2);
     // Funkcja do generacji liczby losowej z jakiegoś zakresu
     int generate_random_number(int down, int up);
     // Funkcja do zapisania wyników pomiarów do pliku .csv

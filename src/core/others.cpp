@@ -11,12 +11,13 @@ std::mt19937 gen(rd());
 /**
  * Funkcja do zamiany dwóch liczb miejscami
  * 
- * @param num_1 Pierwsza liczba do zamiany [int]
- * @param num_2 Druga liczba do zamiany [int]
+ * @param num_1 Pierwsza liczba do zamiany [T]
+ * @param num_2 Druga liczba do zamiany [T]
 */
-void Others::swap(int& num_1, int& num_2)
+template <typename T>
+void Others::swap(T& num_1, T& num_2)
 {
-    int temp = num_1;
+    T temp = num_1;
     num_1 = num_2;
     num_2 = temp;
 }
@@ -75,3 +76,9 @@ void Others::save_experiment_to_file(bool is_matrix, unsigned int algorithm_code
     std::cout << " Poprawnie zapisano dane do pliku\n";
     fout.close();
 }
+
+/*
+*   Zdefiniowanie typów dla funkcji
+*/
+template void Others::swap(int& num_1, int& num_2);
+template void Others::swap(Structures::Vertex& num_1, Structures::Vertex& num_2);

@@ -26,7 +26,7 @@ namespace Menu
     // Funkcja wyświetlająca mapę struktur Entry
     void show(MenuEntries menu);
     // Funkcja wykonująca wybraną z MenuEntries funkcję
-    void getEntry(MenuEntries menu);
+    void get_entry(MenuEntries menu);
 
 };
 

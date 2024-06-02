@@ -17,20 +17,11 @@
  * Konstruktor klasy DisjointSet
 */
 DisjointSet::DisjointSet(int n)
-    : n_(n)
+    : n_(n),
+      rank_(std::make_unique<int[]>(n)),
+      parent_(std::make_unique<int[]>(n))
 {
-    rank_ = new int[n];
-    parent_ = new int[n];
     make_set();
-}
-
-/**
- * Destruktor klasy DisjointSet
-*/
-DisjointSet::~DisjointSet()
-{
-    delete[] parent_;
-    delete[] rank_;
 }
 
 /**
@@ -65,7 +56,7 @@ int DisjointSet::find_set(int x)
  * @param x Wierzchołek pierwszego zbioru [int]
  * @param y Wierzchołek drugiego zbioru   [int]
  */
-void DisjointSet::Union(int x, int y)
+void DisjointSet::union_(int x, int y)
 {
     int xset = find_set(x);
     int yset = find_set(y);
