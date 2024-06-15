@@ -6,6 +6,8 @@
 #define APP_H
 #include "menu.h"
 #include "test.h"
+#include "algorithms/mst.h"
+#include "algorithms/shortest_path.h"
 #include "graphs/adjacency_list.h"
 #include "graphs/incidence_matrix.h"
 
@@ -26,11 +28,10 @@ public:
 
 private:
     bool is_running_;                                               // Czy aplikacja jest uruchomiona                       [bool]
-    bool is_matrix;                                                 // Czy aktywną reprezentacją jest macierz incydencji    [bool]
     unsigned int state_;                                            // Stan aplikacji                                       [unsigned int]
     Menu::MenuEntries modes_menu_, graphs_menu_, algorithms_menu_;  // Menu aplikacji                                       [MenuEntries]
     IncidenceMatrix demo_incidence_matrix_;                         // Demonstracyjna macierz incydencji                    [Array<int>]
-    AdjacencyList demo_adjacency_list;                              // Demonstracyjna lista sąsiedztwa                      [Array<float>]
+    AdjacencyList demo_adjacency_list_;                              // Demonstracyjna lista sąsiedztwa                      [Array<float>]
 
     // Funkcja ustawiająca stan aplikacji
     void set_state(unsigned int state);
@@ -41,8 +42,7 @@ private:
     // Funkcja wykonująca stan wyboru algorytmu
     void perform_algorithm_selection();
     // Funkcja wykonująca wybrany algorytm
-    template <typename T>
-    void perform_alogrithm(T graph, std::function<void()> graph_algorithm);
+    void perform_alogrithm(unsigned int algorithm_number);
 };
 
 #endif

@@ -1,18 +1,5 @@
 /**
- * Plik źródłowy zawierającegy implementację struktury Edge,
- * struktury EdgeList oraz klasy AdjacencyList
- *
- * Struktura Egde jest pojedynczą krawędzią należącą do EgdeList,
- * czyli komórki listy sąsiedztwa przechowującą listę krawędzi
- * powiązanych z danym wierzchołkiem. Egde przechowuje
- * zmienną destination [int], czyli numer wierzchołka docelowego,
- * zmienną weight [int], czyli wagę wierzchołka, oraz
- * wskaźnik na następną krawędź next [Edge*].
- *
- * Struktura EgdeList jest listą krawędzi, z którą dany
- * wierzchołek jest połączony. Przechowuje ona
- * zmienną v_num [int], czyli numer wierzchołka startowego,
- * oraz wskaźnik na początek (głowę) listy head [Edge*]
+ * Plik źródłowy zawierającegy implementację klasy AdjacencyList
  *
  * Klasa AdjacencyList jest implementacją listy sąsiedztwa.
  * Lista przechowuje zmienne:
@@ -23,8 +10,6 @@
 
 #include "adjacency_list.h"
 
-using namespace std;
-
 /**
  * Konstruktor klasy AdjacencyList
 */
@@ -34,22 +19,43 @@ AdjacencyList::AdjacencyList()
 }
 
 /**
+ * Funkcja dodająca krawędź do grafu
+ * @param edge  Krawędź                  [Structures::Edge]
+ */
+void AdjacencyList::add_edge(Structures::Edge edge)
+{
+    adjacency_list_[edge.source_id].push_front(edge.destination_id, edge.weight);
+    std::cout << "Poprawnie dodano krawędź ";
+    edge.print();
+}
+
+/**
  * Funkcja zwracająca tablicę wszystkich krawędzi.
  * @return edge_list: Lista wszystkich krawędzi w grafie [Array<Structures::Edge>]
  */
 Array<Structures::Edge> AdjacencyList::get_all_edges_list()
 {
     Array<Structures::Edge> edge_list;
+    for (int i = 0; i < vertices_num_; i++)
+    {
+        for (const auto &item : adjacency_list_[i])
+        {
+            Structures::Edge edge(i, item.vertex_id, item.key);
+            edge_list.push_back(edge);
+        }
+    }
     return edge_list;
 }
 
 /**
- * Funkcja dodająca krawędź do grafu
- * @param edge  Krawędź                  [Structures::Edge]
- */
-void AdjacencyList::add_edge(Structures::Edge edge)
+ * Funkcja zwracająca sąsiadów danego wierzchołka
+ * 
+ * @param verted_id ID wierzchołka,którego szukane jest sąsiedztwo [int]
+ * @return adjacency - lista sąsiadów [LinkedList]
+*/
+LinkedList AdjacencyList::get_adjacency(const int &vertex_id)
 {
-
+    return adjacency_list_[vertex_id];
 }
 
 /**
@@ -57,5 +63,5 @@ void AdjacencyList::add_edge(Structures::Edge edge)
  */
 void AdjacencyList::print() const
 {
-
+    adjacency_list_.print();
 }

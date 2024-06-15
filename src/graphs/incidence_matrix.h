@@ -1,12 +1,5 @@
 /**
- * Plik nagłówkowy pliku zawierającego implementację struktury IMEdge,
- * oraz klasy IncidenceMatrix
- *
- * Struktura IMEdge jest strukturą zawierającą informację
- * o krawędzi. Przechowuje zmienną source [int], czyli numer
- * wierzchołka startowego, zmienną destination [int], czyli
- * numer wierzchołka końcowego, oraz zmienną weight [int],
- * czyli wagę krawędzi.
+ * Plik źródłowy zawierający implementację  klasy IncidenceMatrix
  *
  * Klasa IncidenceMatrix jest implementacją macierzy incydencji.
  * Macierz przechowuje zmienne:
@@ -19,6 +12,7 @@
 #define INCIDENCE_MATRIX_H
 #include "graph.h"
 #include "core/others.h"
+#include "structures/linked_list.h"
 
 #include <iostream>
 
@@ -34,6 +28,8 @@ public:
     void add_edge(Structures::Edge edge);
     // Funkcja zwracająca tablicę wszystkich krawędzi
     Array<Structures::Edge> get_all_edges_list();
+    // Funkcja zwracająca sąsiadów danego wierzchołka
+    LinkedList get_adjacency(const int &vertex_id);
     // Funkcja wyświetlająca graf
     void print() const;
 

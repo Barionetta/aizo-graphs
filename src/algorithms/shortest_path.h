@@ -1,36 +1,38 @@
 /**
  * Plik nagłówkowy pliku zawierającego implementację algorytmów
- * wyznaczających najkrótszą ścieżkę w grafie między dwoma wierzchołkami.
+ * wyznaczających najkrótsze ścieżki w grafie.
  */
 
 #ifndef SHORTEST_PATH_H
 #define SHORTEST_PATH_H
-
-#include <iostream>
+#include "core/others.h"
+#include "graphs/graph.h"
+#include "structures/array.h"
+#include "structures/linked_list.h"
+#include "structures/priority_queue.h"
+#include "structures/structures.h"
 
 namespace ShortestPath
 {
     struct Path
-    {
-        int cost;           // Koszt ścieżki                    [int]
-        int vertices_num;   // Liczba wierzchołków w ścieżce    [int]   
-        int vertices[];     // Tablica wierzchołków             [int*]
+    {   
+        Array<Structures::Vertex> vertices; // Lista wierzchołków i ich dystansów   [Array<int>]
+        Array<int> predcessors;             // Lista poprzedników                   [Array<int>]
 
         // Funkcja do wyświetlania struktury
         void print()
         {
-            std::cout << "Koszt ścieżki: " << cost << "Ścieżka: ";
-            for (int v = vertices_num - 1; v > 0; v--)
+            std::cout << "Nr    Dystans     Poprzednik\n";
+            for (int i = 0; i < vertices.get_size(); i++)
             {
-                std::cout << vertices[v] << " -> ";
+                std::cout << i << "     " << vertices[i].key << "      " << predcessors[i] << "\n";
             }
-            std::cout << vertices[0] << "\n";
         }
     };
-
-    Path dijikstra();
-
-    Path bellman_ford();
+    // Algorytm Dijkstry
+    Path dijkstra(Graph& graph, int source);
+    // Algorytm Bellmana - Forda
+    Path bellman_ford(Graph& graph, int source);
 }
 
 #endif

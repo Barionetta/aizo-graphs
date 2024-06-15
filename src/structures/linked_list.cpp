@@ -31,7 +31,7 @@ LinkedList::LinkedList(const LinkedList& list)
 LinkedList::LinkedList(LinkedList&& list)
     : head_(nullptr)
 {
-    *this = list;
+    head_ = std::move(list.head_);
 }
 
 /**
@@ -56,7 +56,7 @@ LinkedList& LinkedList::operator=(const LinkedList& list)
 */
 LinkedList& LinkedList::operator=(LinkedList&& list)
 {
-    std::swap(head_, list.head_);
+    head_ = std::move(list.head_);
     return *this;
 }
 
@@ -80,30 +80,10 @@ void LinkedList::print() const
     auto temp = head_.get();
     while (temp)
     {
-        std::cout << "V " << temp->vertex.vertex_id << " / " << temp->vertex.key << " -> ";
+        std::cout << temp->vertex.vertex_id << " / " << temp->vertex.key << " -> ";
         temp = temp->next.get();
     }
     std::cout << "nullptr\n";
-}
-
-/**
- * Funkcja znajdująca klucz zadanego elementu
- * 
- * @param vertex_id Indeks wierzchołka [int]
- * @return key - Klucz wierzchołka     [int]
-*/
-int LinkedList::find_key(const int &vertex_id)
-{
-    auto temp = head_.get();
-    while (temp)
-    {
-        if (temp->vertex.vertex_id == vertex_id)
-        {
-            return temp->vertex.key;
-        }
-        temp = temp->next.get();
-    }
-    return -1;
 }
 
 /**
@@ -120,4 +100,71 @@ void LinkedList::push_front(const int &vertex_id, const int &weight)
 void LinkedList::pop_front()
 {
     head_ = std::move(head_->next);
+}
+
+/**
+ * Konstruktory domyślny klasy Iterator
+*/
+LinkedList::Iterator::Iterator()
+    : current_node_(nullptr)
+{ }
+
+/**
+ * Konstruktor z zainicjalizowanym wskaźnikiem
+*/
+LinkedList::Iterator::Iterator(const std::unique_ptr<Node> &node)
+    :current_node_(node.get())
+{ }
+
+/**
+ * Operator dereferencji
+*/
+Structures::Vertex & LinkedList::Iterator::operator*() const
+{
+    return this->current_node_->vertex;
+}
+
+/**
+ * Operator inkrementacji
+*/
+LinkedList::Iterator& LinkedList::Iterator::operator++()
+{
+    if (current_node_ != nullptr)
+    {
+        previous_node = current_node_;
+        current_node_ = current_node_->next.get();
+    }
+    return *this;
+}
+
+/**
+ * Operator równości
+*/
+bool LinkedList::Iterator::operator==(Iterator iterator) const
+{
+    return this->current_node_ == iterator.current_node_;
+}
+
+/**
+ * Operator nierówności
+*/
+bool LinkedList::Iterator::operator!=(Iterator iterator) const
+{
+    return this->current_node_ != iterator.current_node_;
+}
+
+/**
+ * Iterator zwracający wskaźnik na początek listy
+*/
+LinkedList::Iterator LinkedList::begin() const
+{
+    return LinkedList::Iterator(this->head_);
+}
+
+/**
+ * Iterator zwracający wskaźnik na koniec listy
+*/
+LinkedList::Iterator LinkedList::end() const
+{
+    return Iterator();
 }

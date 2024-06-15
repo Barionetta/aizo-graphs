@@ -24,6 +24,8 @@ public:
     // Destruktor klasy PriorityQueue
     ~PriorityQueue() = default;
 
+    // Funkcja sprawdzająca, czy kolejka jest pusta
+    bool is_empty();
     // Funkcja usuwająca korzeń kopca
     int extract_min();
     // Funkcja aktualizuje indeks danej wartości

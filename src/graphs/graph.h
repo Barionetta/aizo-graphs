@@ -6,6 +6,7 @@
 #define GRAPH_H
 #include "structures/array.h"
 #include "structures/structures.h"
+#include "structures/linked_list.h"
 
 class Graph
 {
@@ -28,6 +29,8 @@ public:
     virtual void add_edge(Structures::Edge edge) {};
     // Funkcja zwracająca tablicę wszystkich krawędzi
     virtual Array<Structures::Edge> get_all_edges_list() = 0;
+    // Funkcja zwracająca sąsiadów danego wierzchołka
+    virtual LinkedList get_adjacency(const int &vertex_id) = 0;
     // Funkcja wyświetlająca graf
     virtual void print() const {};
 

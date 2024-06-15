@@ -17,6 +17,20 @@ PriorityQueue::PriorityQueue()
 { }
 
 /**
+ * Funkcja sprawdzająca, czy kolejka jest pusta
+ * 
+ * @return is_empty - czy kolejka jest pusta [bool]
+*/
+bool PriorityQueue::is_empty()
+{
+    if (data_.get_size())
+    {
+        return false;
+    }
+    return true;
+}
+
+/**
  * Funkcja usuwająca korzeń kopca
  * Cormen, Thomas H.; Leiserson, Charles E.; Rivest, Ronald L.;
  * Stein, Clifford (2022) [1990]. Introduction to Algorithms (4th ed.)

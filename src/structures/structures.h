@@ -25,6 +25,16 @@ namespace Structures
             if(vertex_id == vertex.vertex_id && key == vertex.key) { return true; }
             return false;
         }
+        // Operator >
+        bool operator>(const Vertex &vertex) const
+        {
+            return key > vertex.key;
+        }
+        // Operator <
+        bool operator<(const Vertex &vertex) const
+        {
+            return key < vertex.key;
+        }
         // Desktruktor
         ~Vertex() = default;
         // Funkcja do wyświetlania struktury
@@ -53,6 +63,16 @@ namespace Structures
                weight == edge.weight)
             { return true; }
             return false;
+        }
+        // Operator >
+        bool operator>(const Edge &edge) const
+        {
+            return weight > edge.weight;
+        }
+        // Operator <
+        bool operator<(const Edge &edge) const
+        {
+            return weight < edge.weight;
         }
         // Desktruktor
         ~Edge() = default;

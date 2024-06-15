@@ -1,24 +1,11 @@
 /**
- * Plik nagłówkowy pliku zawierającego implementację struktury Edge,
- * struktury EdgeList oraz klasy AdjacencyList
- *
- * Struktura Egde jest pojedynczą krawędzią należącą do EgdeList,
- * czyli komórki listy sąsiedztwa przechowującą listę krawędzi
- * powiązanych z danym wierzchołkiem. Egde przechowuje
- * zmienną destination [int], czyli numer wierzchołka docelowego,
- * zmienną weight [int], czyli wagę wierzchołka, oraz
- * wskaźnik na następną krawędź next [Edge*].
- *
- * Struktura EgdeList jest listą krawędzi, z którą dany
- * wierzchołek jest połączony. Przechowuje ona
- * zmienną v_num [int], czyli numer wierzchołka startowego,
- * oraz wskaźnik na początek (głowę) listy head [Edge*]
+ * Plik źródłowy zawierającegy implementację klasy AdjacencyList
  *
  * Klasa AdjacencyList jest implementacją listy sąsiedztwa.
  * Lista przechowuje zmienne:
- *  vertices_num    [int]       - ilość wierzchołków
- *  edges_num       [int]       - ilość krawędzi
- *  vertices        [EdgeList*] - listy dla każdego wierzchołka
+ *  vertices_num_    [int]                  - ilość wierzchołków
+ *  edges_num_       [int]                  - ilość krawędzi
+ *  adjacency_list_  [Array<LinkedList>]    - listy dla każdego wierzchołka
  */
 
 #ifndef ADJACENCY_LIST_H
@@ -41,11 +28,13 @@ public:
     void add_edge(Structures::Edge edge);
     // Funkcja zwracająca tablicę wszystkich krawędzi
     Array<Structures::Edge> get_all_edges_list();
+    // Funkcja zwracająca sąsiadów danego wierzchołka
+    LinkedList get_adjacency(const int &vertex_id);
     // Funkcja wyświetlająca graf
     void print() const;
 
 private:
-    Array<LinkedList> adjacency_list; // Tablica list krawędzi dla każdego wierzchołka    [Array<LinkedList>]
+    Array<LinkedList> adjacency_list_; // Tablica list krawędzi dla każdego wierzchołka    [Array<LinkedList>]
 };
 
 #endif

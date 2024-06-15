@@ -1,12 +1,5 @@
 /**
- * Plik źródłowy zawierający implementację struktury IMEdge,
- * oraz klasy IncidenceMatrix
- *
- * Struktura IMEdge jest strukturą zawierającą informację
- * o krawędzi. Przechowuje zmienną source [int], czyli numer
- * wierzchołka startowego, zmienną destination [int], czyli
- * numer wierzchołka końcowego, oraz zmienną weight [int],
- * czyli wagę krawędzi.
+ * Plik źródłowy zawierający implementację  klasy IncidenceMatrix
  *
  * Klasa IncidenceMatrix jest implementacją macierzy incydencji.
  * Macierz przechowuje zmienne:
@@ -26,16 +19,6 @@ IncidenceMatrix::IncidenceMatrix()
 }
 
 /**
- * Funkcja zwracająca tablicę wszystkich krawędzi.
- * @return edge_list: Lista wszystkich krawędzi w grafie [Array<Structures::Edge>]
- */
-Array<Structures::Edge> IncidenceMatrix::get_all_edges_list()
-{
-    Array<Structures::Edge> edge_list;
-    return edge_list;
-}
-
-/**
  * Funkcja dodająca krawędź do grafu
  * @param edge  Krawędź                  [Structures::Edge]
  */
@@ -47,6 +30,56 @@ void IncidenceMatrix::add_edge(Structures::Edge edge)
     matrix_.push_back(new_edge);
     std::cout << "Poprawnie dodano krawędź ";
     edge.print();
+}
+
+/**
+ * Funkcja zwracająca tablicę wszystkich krawędzi.
+ * @return edge_list: Lista wszystkich krawędzi w grafie [Array<Structures::Edge>]
+ */
+Array<Structures::Edge> IncidenceMatrix::get_all_edges_list()
+{
+    Array<Structures::Edge> edge_list;
+    
+    for (int i = 0; i < edges_num_; i++)
+    {
+        Structures::Edge edge;
+        for (int j = 0; j < vertices_num_; j++)
+        {
+            if ( matrix_[i][j] > 0)
+            {
+                edge.destination_id = j;
+                edge.weight = matrix_[i][j];
+            }
+            if ( matrix_[i][j] < 0 ) { edge.source_id = j; }
+        }
+        edge_list.push_back(edge);
+    }
+    return edge_list;
+}
+
+/**
+ * Funkcja zwracająca sąsiadów danego wierzchołka
+ * 
+ * @param verted_id ID wierzchołka,którego szukane jest sąsiedztwo [int]
+ * @return adjacency - lista sąsiadów [LinkedList]
+*/
+LinkedList IncidenceMatrix::get_adjacency(const int &vertex_id)
+{
+    LinkedList adjacency;
+    for (int i = 0; i < edges_num_; i++)
+    {
+        if (matrix_[i][vertex_id])
+        {
+            for (int j = 0; j < vertices_num_; j++)
+            {
+                if(matrix_[i][j] && j != vertex_id)
+                {
+                    adjacency.push_front(j, matrix_[i][j]);
+                }
+            }
+        }
+    }
+    return adjacency;
 }
 
 /**

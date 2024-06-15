@@ -28,8 +28,6 @@ public:
     
     // Funkcja wyświetlająca listę
     void print() const;
-    // Funkcja znajdująca klucz zadanego elementu
-    int find_key(const int &vertex_id);
     // Funkcja dodająca element na początku listy
     void push_front(const int &vertex_id, const int &weight);
     // Funkcja usuwająca element z początka listy
@@ -50,6 +48,29 @@ private:
         ~Node() = default;
     };
     std::unique_ptr<Node> head_;   // Wskaźnik na pierwszy element [Node*]
+
+public:
+    class Iterator
+    {
+    public:
+        // Konstruktory klasy Iterator
+        Iterator();
+        Iterator(const std::unique_ptr<Node> &node);
+        // Operator dereferencji
+        Structures::Vertex & operator*() const;
+        // Operator inkrementacji
+        Iterator& operator++();
+        // Operatory równości i nierówności
+        bool operator==(Iterator iterator) const;
+        bool operator!=(Iterator iterator) const;
+    private:
+        Node* current_node_;   // Wskaźnik na aktualny węzeł    [Node*]
+        Node* previous_node;   // Wskaźnik na poprzedni węzeł   [Node*]
+    };
+
+    // Iteratory dla listy
+    Iterator begin() const;
+    Iterator end() const;
 };
 
 #endif
