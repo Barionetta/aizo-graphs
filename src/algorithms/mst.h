@@ -6,6 +6,7 @@
 #ifndef MST_H
 #define MST_H
 #include "graphs/graph.h"
+#include "core/others.h"
 #include "structures/array.h"
 #include "structures/disjoint_set.h"
 #include "structures/priority_queue.h"

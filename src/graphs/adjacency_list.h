@@ -24,6 +24,10 @@ public:
     // Destruktor klasy AdjacencyList
     ~AdjacencyList() = default;
 
+    // Funkcja ustawiająca wymiary grafu
+    void set_size();
+    // Funkcja sprawdzająca, czy graf ma krawędź
+    bool has_edge(int source, int destination);
     // Funkcja dodająca krawędź do grafu
     void add_edge(Structures::Edge edge);
     // Funkcja zwracająca tablicę wszystkich krawędzi

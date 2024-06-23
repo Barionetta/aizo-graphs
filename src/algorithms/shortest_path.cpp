@@ -24,9 +24,10 @@ ShortestPath::Path ShortestPath::dijkstra(Graph& graph, int source)
     {
         shortest_path.vertices.push_back(Structures::Vertex(i, 1000));
         shortest_path.predcessors.push_back(-1);
-        if (i != source ) { queue.push(i, 1000); } 
+        queue.push(i, 1000);
     }
     shortest_path.vertices[source].key = 0;
+    queue.decrease_key(source, 0);
 
     while (!queue.is_empty())
     {
@@ -35,14 +36,15 @@ ShortestPath::Path ShortestPath::dijkstra(Graph& graph, int source)
 
         for (auto &item : adjacency)
         {
-            // if queue.has_item(item)
-            int distance = shortest_path.vertices[u].key + item.key;
-            if (queue.find(item.vertex_id) != -1 && distance < shortest_path.vertices[u].key)
+            if (queue.has_vertex(item.vertex_id))
             {
-                shortest_path.vertices[item.vertex_id].key = distance;
-                shortest_path.predcessors[item.vertex_id] = u;
+                if (shortest_path.vertices[u].key + item.key < shortest_path.vertices[item.vertex_id].key)
+                {
+                    shortest_path.vertices[item.vertex_id].key = shortest_path.vertices[u].key + item.key;
+                    shortest_path.predcessors[item.vertex_id] = u;
+                    queue.decrease_key(item.vertex_id, item.key);
+                }
             }
-            queue.decrease_key(item.vertex_id, item.key);
         }
     }
 

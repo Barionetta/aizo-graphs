@@ -5,7 +5,6 @@
 
 #ifndef SHORTEST_PATH_H
 #define SHORTEST_PATH_H
-#include "core/others.h"
 #include "graphs/graph.h"
 #include "structures/array.h"
 #include "structures/linked_list.h"

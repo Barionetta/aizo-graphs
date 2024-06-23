@@ -4,7 +4,6 @@
  */
 
 #include "mst.h"
-#include "structures/disjoint_set.h"
 
 /**
  * Algorytm Prima
@@ -20,26 +19,29 @@ MST::MinimalSpanningTree MST::prim(Graph& graph)
     int e_nums = graph.get_edges_num();
     int keys[v_nums];
     int parents[v_nums];
+
     PriorityQueue queue;
     MST::MinimalSpanningTree ms_tree;
-    keys[0] = 0;
-    parents[0] = -1;
 
-    for (int i = 1; i < v_nums; i++)
+    for (int i = 0; i < v_nums; i++)
     {
-        keys[i] = 1000;
+        keys[i] = 10000;
         parents[i] = -1;
         queue.push(i, keys[i]);
     }
+    keys[0] = 0;
+    queue.decrease_key(0,0);
+    
+    queue.print();
 
     while (!queue.is_empty())
     {
         int u = queue.extract_min();
         LinkedList adjacency = graph.get_adjacency(u);
-
+        
         for (auto &item : adjacency)
         {
-            if ( queue.find(item.vertex_id) != -1 && item.key < keys[u] )
+            if ( queue.has_vertex(item.vertex_id) && item.key < keys[item.vertex_id] )
             {
                 parents[item.vertex_id] = u;
                 keys[item.vertex_id] = item.key;
@@ -50,7 +52,7 @@ MST::MinimalSpanningTree MST::prim(Graph& graph)
 
     for (int i = 1; i < v_nums; i++)
     {
-        ms_tree.edges.push_back(Structures::Edge(i, parents[i], keys[i]));
+        ms_tree.edges.push_back(Structures::Edge(parents[i], i, keys[i]));
     }
 
     return ms_tree;

@@ -19,16 +19,6 @@ Array<T>::Array()
 { }
 
 /**
- * Konstruktor klasy Array z określonym rozmiarem
- */
-template <typename T>
-Array<T>::Array(const int& size)
-    : size_(size),
-      max_size_(size + 5),
-      data_(std::make_unique<T[]>(max_size_))
-{ }
-
-/**
  * Konstruktor kopiujący klasy Array
  *
  * @param array Tablica, która jest kopiowana [Array<T>&]
@@ -104,12 +94,22 @@ int Array<T>::get_size() const
 }
 
 /**
+ * Funkcja ustawiająca długość tablicy
+*/
+template <typename T>
+void Array<T>::set_size(const int& size)
+{
+    max_size_ = size;
+    std::unique_ptr<T[]> new_data = std::make_unique<T[]>(max_size_ + 5);
+    data_ = std::move(new_data);
+}
+
+/**
  * Funkcja wyświetlająca zawartość tablicy.
  */
 template <typename T>
 void Array<T>::print() const
 {
-    std::cout << "Tablica składa się z : ";
     for (int i = 0; i < size_; i++)
     {
         if constexpr(std::is_integral_v<T>)
@@ -118,6 +118,7 @@ void Array<T>::print() const
         }
         else
         {
+            std::cout << " " << i << ": ";
             data_[i].print();
         }
     }
@@ -134,8 +135,9 @@ void Array<T>::push_back(const T& value)
 {
     if (size_ == max_size_)
     {
-        std::unique_ptr<T[]> new_data = std::make_unique<T[]>(this->max_size_ + 5);
-        data_ = std::move(new_data);
+        std::unique_ptr<T[]> new_data = std::make_unique<T[]>(max_size_ + 5);
+        new_data = std::move(data_);
+        std::swap(data_, new_data);
         max_size_ += 5;
     }
     data_[size_] = value;
@@ -153,7 +155,8 @@ void Array<T>::pop_back()
     {
         max_size_ = size_;
         std::unique_ptr<T[]> new_data = std::make_unique<T[]>(max_size_);
-        data_ = std::move(new_data);
+        new_data = std::move(data_);
+        std::swap(data_, new_data);
     }
 }
 
@@ -174,7 +177,6 @@ void Array<T>::insert(const T& value, const int& position)
 *   Zdefiniowanie typów dla tablicy
 */
 template class Array<int>;
-template class Array<Array<int>>;
 template class Array<LinkedList>;
 template class Array<Structures::Vertex>;
 template class Array<Structures::Edge>;

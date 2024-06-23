@@ -14,7 +14,7 @@ public:
     // Konstruktor klasy Graph
     Graph();
     // Destruktor klasy Graph
-    virtual ~Graph() {}
+    virtual ~Graph() {};
 
     // Funkcja ustawiająca liczbę wierzchołków
     void set_vertices_num(int vertices);
@@ -25,8 +25,12 @@ public:
     // Funkcja zwracająca liczbę krawędzi w grafie
     int get_edges_num() const;
 
+    // Funkcja ustawiająca wymiary grafu
+    virtual void set_size() = 0;
+    // Funkcja sprawdzająca, czy graf ma krawędź
+    virtual bool has_edge(int source, int destination) = 0;
     // Funkcja dodająca krawędź do grafu
-    virtual void add_edge(Structures::Edge edge) {};
+    virtual void add_edge(Structures::Edge edge) = 0;
     // Funkcja zwracająca tablicę wszystkich krawędzi
     virtual Array<Structures::Edge> get_all_edges_list() = 0;
     // Funkcja zwracająca sąsiadów danego wierzchołka

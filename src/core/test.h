@@ -4,9 +4,15 @@
 
 #ifndef TEST_H
 #define TEST_H
+#include "algorithms/mst.h"
+#include "algorithms/shortest_path.h"
+#include "graphs/incidence_matrix.h"
+#include "graphs/adjacency_list.h"
+#include "structures/structures.h"
 
 #include <chrono>
 #include <functional>
+#include <map>
 #include <iostream>
 
 using std::cout, std::cin;
@@ -16,7 +22,6 @@ namespace Tester
     // Główna funkcja do testowania algorytmów
     void testing();
     // Funkcja do pomiarów dla wybranej reprezentacji
-    template <typename T>
     void test_for_representation(bool is_matrix);
     // Funkcja mierzenia pojedynczego pomiaru
     template <typename T>

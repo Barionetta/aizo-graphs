@@ -8,20 +8,6 @@
 std::random_device rd;
 std::mt19937 gen(rd());
 
-/**
- * Funkcja do zamiany dwóch liczb miejscami
- * 
- * @param num_1 Pierwsza liczba do zamiany [T]
- * @param num_2 Druga liczba do zamiany [T]
-*/
-template <typename T>
-void Others::swap(T& num_1, T& num_2)
-{
-    T temp = num_1;
-    num_1 = num_2;
-    num_2 = temp;
-}
-
 /*
  * Funkcja sortująca daną tablicę
  * Zastosowano algorytm przez wstawianie.
@@ -68,10 +54,36 @@ int Others::generate_random_number(int down, int up)
 /**
  * Funkcja do wygenerowania tablicy liczb losowych
  * 
+ * @param graph         Graf do którego mają być wczytane liczby    [Graph]
+ * @param vertices_num  Liczba wierzchołków                         [int]
+ * @param density       Gęstość grafu (w %)                         [float]
+ * 
 */
-void Others::generate_random_graph(Graph& graph, int vertices_num, int density)
+void Others::generate_random_graph(Graph& graph, int vertices_num, float density)
 {
+    int e_nums = (density * vertices_num * (vertices_num - 1)) / 2;
+    graph.set_vertices_num(vertices_num);
+    graph.set_edges_num(e_nums);
+    graph.set_size();
+    
+    for (int i = 0; i < vertices_num - 1; i++)
+    {
+        int weight = generate_random_number(0, 2000);
+        graph.add_edge(Structures::Edge(i, i+1, weight));
+    }
 
+    int add_edges = e_nums - (vertices_num - 1);
+    while (add_edges > 0)
+    {
+        int source = generate_random_number(0, vertices_num);
+        int destination = generate_random_number(0, vertices_num);
+        if (source != destination && graph.has_edge(source, destination) == false)
+        {   
+            int weight = generate_random_number(0, 2000);
+            graph.add_edge(Structures::Edge(source, destination, weight));
+            --add_edges;
+        }
+    }
 }
 
 /**
@@ -80,7 +92,8 @@ void Others::generate_random_graph(Graph& graph, int vertices_num, int density)
  * Plik tekstowy musi znajdować się w folderze data w tym samym folderze,
  * co główny plik programu!
  *
- * @param filepath Nazwa pliku, z którego wczytywana jest tablica [string]
+ * @param graph     Graf do którego mają być wczytane liczby        [Graph]
+ * @param filepath  Nazwa pliku, z którego wczytywana jest tablica  [string]
 */
 void Others::read_graph_from_file(Graph& graph, std::string& filepath)
 {
@@ -92,11 +105,10 @@ void Others::read_graph_from_file(Graph& graph, std::string& filepath)
     {
         f >> input; graph.set_edges_num(input);
         f >> input; graph.set_vertices_num(input);
-        std::cout << "Rozmiar tablicy: " << input << std::endl;
-        while (f >> input)
+        //graph.set_size();
+        int source, destination, weight;
+        while (f >> source >> destination >> weight)
         {   
-            int source, destination, weight;
-            f >> source >> destination >> weight;
             graph.add_edge(Structures::Edge(source, destination, weight));
         }
         f.close();
@@ -143,7 +155,8 @@ void Others::save_experiment_to_file(bool is_matrix, unsigned int algorithm_code
     {
         fout << algorithm_name << "," << vertices_num << ",25%," << saved_times[0] << std::endl;
         fout << algorithm_name << "," << vertices_num << ",50%," << saved_times[1] << std::endl;
-        fout << algorithm_name << "," << vertices_num << ",99%," << saved_times[2] << std::endl;
+        fout << algorithm_name << "," << vertices_num << ",75%," << saved_times[2] << std::endl;
+        fout << algorithm_name << "," << vertices_num << ",99%," << saved_times[3] << std::endl;
     }
     std::cout << " Poprawnie zapisano dane do pliku\n";
     fout.close();
@@ -152,7 +165,5 @@ void Others::save_experiment_to_file(bool is_matrix, unsigned int algorithm_code
 /*
 *   Zdefiniowanie typów dla funkcji
 */
-template void Others::swap(int& num_1, int& num_2);
-template void Others::swap(Structures::Vertex& num_1, Structures::Vertex& num_2);
 template void Others::sort(Array<Structures::Vertex>& array);
 template void Others::sort(Array<Structures::Edge>& array);

@@ -15,9 +15,11 @@ App::App()
                    make_pair(2, Menu::Entry("Przeprowadź badania\n", [](){ Tester::testing(); })),
                    make_pair(3, Menu::Entry("Zakończ\n", [this](){ this->is_running_ = false; }))};
 
-    graphs_menu_ = {make_pair(1, Menu::Entry("Wygeneruj graf z pliku\n", [this](){ cout << "Podaj nazwę pliku: \n"; std::string filename; cin >> filename; Others::read_graph_from_file(demo_incidence_matrix_, filename); Others::read_graph_from_file(demo_adjacency_list_, filename);})),
-                   make_pair(2, Menu::Entry("Wygeneruj graf z losowymi danymi\n", [this](){ int v_num, density; cout << "Ile wierzchołków ma mieć graf?\n"; cin >> v_num; cout << "Jak gęsty ma być graf?\n"; cin >> density; Others::generate_random_graph(demo_incidence_matrix_, v_num, density); Others::generate_random_graph(demo_adjacency_list_, v_num, density);})),
-                   make_pair(5, Menu::Entry("Zakończ\n", [this](){ this->is_running_ = false; }))};
+    graphs_menu_ = {make_pair(1, Menu::Entry("Wygeneruj graf z pliku\n", [this](){ cout << "Podaj nazwę pliku: \n"; std::string filename; cin >> filename; Others::read_graph_from_file(demo_incidence_matrix_, filename); demo_incidence_matrix_.print();
+                                                                                    Others::read_graph_from_file(demo_adjacency_list_, filename); demo_adjacency_list_.print();})),
+                   make_pair(2, Menu::Entry("Wygeneruj graf z losowymi danymi\n", [this](){ int v_num; float density; cout << "Ile wierzchołków ma mieć graf?\n"; cin >> v_num; cout << "Jak gęsty ma być graf?\n"; cin >> density; Others::generate_random_graph(demo_incidence_matrix_, v_num, density); demo_incidence_matrix_.print();
+                                                                                            Others::generate_random_graph(demo_adjacency_list_, v_num, density); demo_adjacency_list_.print();})),
+                   make_pair(3, Menu::Entry("Zakończ\n", [this](){ this->is_running_ = false; }))};
 
     algorithms_menu_ = {make_pair(1, Menu::Entry("Minimalne drzewo spinające - Algorytm Prima\n", [this](){perform_alogrithm(1);})),
                         make_pair(2, Menu::Entry("Minimalne drzewo spinające - Algorytm Kruskala\n", [this](){perform_alogrithm(4);})),

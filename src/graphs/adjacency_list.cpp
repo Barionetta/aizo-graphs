@@ -3,9 +3,9 @@
  *
  * Klasa AdjacencyList jest implementacją listy sąsiedztwa.
  * Lista przechowuje zmienne:
- *  vertices_num_    [int]       - ilość wierzchołków
- *  edges_num_       [int]       - ilość krawędzi
- *  vertices        [EdgeList*] - listy dla każdego wierzchołka
+ *  vertices_num_    [int]                  - ilość wierzchołków
+ *  edges_num_       [int]                  - ilość krawędzi
+ *  adjacency_list_  [Array<LinkedList>]    - listy dla każdego wierzchołka
  */
 
 #include "adjacency_list.h"
@@ -16,6 +16,30 @@
 AdjacencyList::AdjacencyList()
 {
     std::cout << "Poprawnie zainicjalizowano listę sąsiedztwa.\n";
+}
+
+/**
+ * Funkcja ustawiająca wymiary grafu
+*/
+void AdjacencyList::set_size()
+{
+    adjacency_list_.set_size(vertices_num_);
+}
+
+/**
+ * Funkcja sprawdzająca, czy graf ma krawędź
+ * 
+ * @param source Źródło sprawdzanej krawędzi    [int]
+ * @param destination Cel sprawdzanej krawędzi  [int]
+ * @return Czy ma krawędź?                      [bool]
+*/
+bool AdjacencyList::has_edge(int source, int destination)
+{
+    for (const auto &item : adjacency_list_[source])
+    {
+        if (item.vertex_id == destination) { return true;}
+    }
+    return false;
 }
 
 /**
@@ -63,5 +87,6 @@ LinkedList AdjacencyList::get_adjacency(const int &vertex_id)
  */
 void AdjacencyList::print() const
 {
+    std::cout << "Graf w postaci listowej: \n";
     adjacency_list_.print();
 }

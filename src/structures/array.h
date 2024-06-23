@@ -21,8 +21,6 @@ class Array
 public:
     // Domyślny konstruktor klasy Array
     Array();
-    // Konstruktor klasy Array z określonym rozmiarem
-    Array(const int& size);
     // Konstruktor kopiujący klasy Array
     Array(const Array<T>& array);
     // Konstruktor przenoszenia klasy Array
@@ -38,6 +36,8 @@ public:
 
     // Funkcja zwracająca długość tablicy
     int get_size() const;
+    // Funkcja ustawiająca długość tablicy
+    void set_size(const int& size);
     // Funkcja wyświetlająca zawartość tablicy
     void print() const;
     // Funkcja dodająca nowy element na koniec istniejącej tablicy

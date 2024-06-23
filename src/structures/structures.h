@@ -3,8 +3,8 @@
  * 
  */
 
-#ifndef DISJOINT_SET_H
-#define DISJOINT_SET_H
+#ifndef STRUCTURES_H
+#define STRUCTURES_H
 
 #include <iostream>
 

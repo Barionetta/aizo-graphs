@@ -15,16 +15,13 @@
 
 namespace Others
 {
-    // Funkcja do zamiany dwóch liczb miejscami
-    template <typename T>
-    void swap(T& num_1, T& num_2);
     // Funkcja sortująca daną tablicę
     template <typename T>
     void sort(Array<T>& array);
     // Funkcja do generacji liczby losowej z jakiegoś zakresu
     int generate_random_number(int down, int up);
     // Funkcja do wygenerowania tablicy liczb losowych
-    void generate_random_graph(Graph& graph, int vertices_num, int density);
+    void generate_random_graph(Graph& graph, int vertices_num, float density);
     // Funkcja do wygenerowania tablicy z pliku tekstowego
     void read_graph_from_file(Graph& graph, std::string& filepath);
     // Funkcja do zapisania wyników pomiarów do pliku .csv

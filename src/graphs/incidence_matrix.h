@@ -1,5 +1,5 @@
 /**
- * Plik źródłowy zawierający implementację  klasy IncidenceMatrix
+ * Plik nagłówkowy pliku zawierającego implementację klasy IncidenceMatrix
  *
  * Klasa IncidenceMatrix jest implementacją macierzy incydencji.
  * Macierz przechowuje zmienne:
@@ -11,19 +11,32 @@
 #ifndef INCIDENCE_MATRIX_H
 #define INCIDENCE_MATRIX_H
 #include "graph.h"
-#include "core/others.h"
-#include "structures/linked_list.h"
-
-#include <iostream>
+#include "structures/array.h"
 
 class IncidenceMatrix : public Graph
 {
 public:
     // Konstruktor klasy IncidenceMatrix
     IncidenceMatrix();
+    // Konstruktor kopiujący klasy Array
+    IncidenceMatrix(const IncidenceMatrix& matrix);
+    // Konstruktor przenoszenia klasy Array
+    IncidenceMatrix(IncidenceMatrix&& matrix);
+    // Operator dostępu
+    Array<int>& operator[] (int i);
+    // Operator kopiowania
+    IncidenceMatrix& operator=(const IncidenceMatrix& matrix);
+    // Operator przenoszenia
+    IncidenceMatrix& operator=(IncidenceMatrix&& matrix);
     // Destruktor klasy IncidenceMatrix
     ~IncidenceMatrix() = default;
 
+    // Funkcja zwracająca długość tablicy
+    int get_size() const;
+    // Funkcja ustawiająca wymiary grafu
+    void set_size();
+    // Funkcja sprawdzająca, czy graf ma krawędź
+    bool has_edge(int source, int destination);
     // Funkcja dodająca krawędź do grafu
     void add_edge(Structures::Edge edge);
     // Funkcja zwracająca tablicę wszystkich krawędzi
@@ -34,7 +47,9 @@ public:
     void print() const;
 
 private:
-    Array<Array<int>> matrix_;  // Tablica dwuwymiarowa o rozmiarach e_num x v_num    [Array<Array<int>>]
+    int size_;                              // Obecny rozmiar macierzy          [int]
+    int max_size_;                          // Maksymalna pojemność macierzy    [int]
+    std::unique_ptr<Array<int>[]> matrix_;    // Macierz                          [*Array<int>]
 };
 
 #endif

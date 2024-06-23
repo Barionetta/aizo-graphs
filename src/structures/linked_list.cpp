@@ -83,7 +83,7 @@ void LinkedList::print() const
         std::cout << temp->vertex.vertex_id << " / " << temp->vertex.key << " -> ";
         temp = temp->next.get();
     }
-    std::cout << "nullptr\n";
+    std::cout << "*\n";
 }
 
 /**

@@ -12,8 +12,8 @@
  * 
  */
 
-#ifndef DISJOINTSET_H
-#define DISJOINTSET_H
+#ifndef DISJOINT_SET_H
+#define DISJOINT_SET_H
 
 #include <memory>
 
